@@ -55,6 +55,13 @@
             <artifactId>ruoyi-generator</artifactId>
         </dependency>
 
+        <!-- 考勤管理模块 -->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-attendance</artifactId>
+            <version>3.7.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

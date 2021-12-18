@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.attendance.mapper.AttendRecordMapper">
+
+    <resultMap type="AttendRecord" id="AttendRecordResult">
+        <result property="recordId"    column="record_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="status"    column="status"    />
+        <result property="date"    column="date"    />
+        <result property="onTime"    column="on_time"    />
+        <result property="offTime"    column="off_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectAttendRecordVo">
+        select r.record_id, r.user_id, r.status, r.date, r.on_time, r.off_time, r.create_by, r.create_time, r.update_by, r.update_time, r.remark
+        from attend_record r left join sys_user u on r.user_id = u.user_id
+    </sql>
+
+    <select id="selectAttendRecordList" parameterType="AttendRecord" resultMap="AttendRecordResult">
+        <include refid="selectAttendRecordVo"/>
+        <where>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="date != null "> and date = #{date}</if>
+            <if test="onTime != null "> and on_time = #{onTime}</if>
+            <if test="offTime != null "> and off_time = #{offTime}</if>
+        </where>
+    </select>
+
+    <select id="selectAttendRecordByRecordId" parameterType="Long" resultMap="AttendRecordResult">
+        <include refid="selectAttendRecordVo"/>
+        where record_id = #{recordId}
+    </select>
+
+    <insert id="insertAttendRecord" parameterType="AttendRecord" useGeneratedKeys="true" keyProperty="recordId">
+        insert into attend_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">user_id,</if>
+            <if test="status != null">status,</if>
+            <if test="date != null">date,</if>
+            <if test="onTime != null">on_time,</if>
+            <if test="offTime != null">off_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">#{userId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="date != null">#{date},</if>
+            <if test="onTime != null">#{onTime},</if>
+            <if test="offTime != null">#{offTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAttendRecord" parameterType="AttendRecord">
+        update attend_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null and userId != ''">user_id = #{userId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="onTime != null">on_time = #{onTime},</if>
+            <if test="offTime != null">off_time = #{offTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where record_id = #{recordId}
+    </update>
+
+    <delete id="deleteAttendRecordByRecordId" parameterType="Long">
+        delete from attend_record where record_id = #{recordId}
+    </delete>
+
+    <delete id="deleteAttendRecordByRecordIds" parameterType="String">
+        delete from attend_record where record_id in
+        <foreach item="recordId" collection="array" open="(" separator="," close=")">
+            #{recordId}
+        </foreach>
+    </delete>
+</mapper>
