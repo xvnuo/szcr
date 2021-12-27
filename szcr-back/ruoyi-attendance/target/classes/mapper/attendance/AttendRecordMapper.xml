@@ -26,10 +26,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectAttendRecordList" parameterType="AttendRecord" resultMap="AttendRecordResult">
         <include refid="selectAttendRecordVo"/>
         <where>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="date != null "> and date = #{date}</if>
-            <if test="onTime != null "> and on_time = #{onTime}</if>
-            <if test="offTime != null "> and off_time = #{offTime}</if>
+            <if test="userId != null  and userId != ''"> and r.user_id = #{userId}</if>
+            <if test="status != null  and status != ''"> and r.status = #{status}</if>
+            <if test="date != null "> and r.date = #{date}</if>
+            <if test="onTime != null "> and r.on_time = #{onTime}</if>
+            <if test="offTime != null "> and r.off_time = #{offTime}</if>
         </where>
     </select>
 

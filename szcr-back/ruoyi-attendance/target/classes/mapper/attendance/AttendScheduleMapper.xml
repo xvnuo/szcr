@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.attendance.mapper.AttendScheduleMapper">
+    
+    <resultMap type="AttendSchedule" id="AttendScheduleResult">
+        <result property="scheduleId"    column="schedule_id"    />
+        <result property="ruleId"    column="rule_id"    />
+        <result property="scheduleName"    column="schedule_name"    />
+        <result property="workDay"    column="work_day"    />
+        <result property="onTime"    column="on_time"    />
+        <result property="offTime"    column="off_time"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectAttendScheduleVo">
+        select schedule_id, rule_id, schedule_name, work_day, on_time, off_time, status, remark from attend_schedule
+    </sql>
+
+    <select id="selectAttendScheduleList" parameterType="AttendSchedule" resultMap="AttendScheduleResult">
+        <include refid="selectAttendScheduleVo"/>
+        <where>  
+            <if test="ruleId != null "> and rule_id = #{ruleId}</if>
+            <if test="scheduleName != null  and scheduleName != ''"> and schedule_name like concat('%', #{scheduleName}, '%')</if>
+            <if test="workDay != null "> and work_day = #{workDay}</if>
+            <if test="onTime != null "> and on_time = #{onTime}</if>
+            <if test="offTime != null "> and off_time = #{offTime}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectAttendScheduleByScheduleId" parameterType="Long" resultMap="AttendScheduleResult">
+        <include refid="selectAttendScheduleVo"/>
+        where schedule_id = #{scheduleId}
+    </select>
+        
+    <insert id="insertAttendSchedule" parameterType="AttendSchedule" useGeneratedKeys="true" keyProperty="scheduleId">
+        insert into attend_schedule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ruleId != null">rule_id,</if>
+            <if test="scheduleName != null and scheduleName != ''">schedule_name,</if>
+            <if test="workDay != null">work_day,</if>
+            <if test="onTime != null">on_time,</if>
+            <if test="offTime != null">off_time,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ruleId != null">#{ruleId},</if>
+            <if test="scheduleName != null and scheduleName != ''">#{scheduleName},</if>
+            <if test="workDay != null">#{workDay},</if>
+            <if test="onTime != null">#{onTime},</if>
+            <if test="offTime != null">#{offTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAttendSchedule" parameterType="AttendSchedule">
+        update attend_schedule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ruleId != null">rule_id = #{ruleId},</if>
+            <if test="scheduleName != null and scheduleName != ''">schedule_name = #{scheduleName},</if>
+            <if test="workDay != null">work_day = #{workDay},</if>
+            <if test="onTime != null">on_time = #{onTime},</if>
+            <if test="offTime != null">off_time = #{offTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where schedule_id = #{scheduleId}
+    </update>
+
+    <delete id="deleteAttendScheduleByScheduleId" parameterType="Long">
+        delete from attend_schedule where schedule_id = #{scheduleId}
+    </delete>
+
+    <delete id="deleteAttendScheduleByScheduleIds" parameterType="String">
+        delete from attend_schedule where schedule_id in 
+        <foreach item="scheduleId" collection="array" open="(" separator="," close=")">
+            #{scheduleId}
+        </foreach>
+    </delete>
+</mapper>

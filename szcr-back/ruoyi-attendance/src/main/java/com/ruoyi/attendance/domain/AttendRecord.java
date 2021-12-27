@@ -1,5 +1,6 @@
 package com.ruoyi.attendance.domain;
 
+import java.sql.Time;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -9,7 +10,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 考勤记录对象 attend_record
- * 
+ *
  * @author xvnuo
  * @date 2021-12-18
  */
@@ -34,66 +35,66 @@ public class AttendRecord extends BaseEntity
     private Date date;
 
     /** 上班时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "上班时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date onTime;
+    @JsonFormat(pattern = "HH:mm:ss")
+    @Excel(name = "上班时间", width = 30, dateFormat = "HH:mm:ss")
+    private Time onTime;
 
     /** 下班时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "下班时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date offTime;
+    @JsonFormat(pattern = "HH:mm:ss")
+    @Excel(name = "下班时间", width = 30, dateFormat = "HH:mm:ss")
+    private Time offTime;
 
-    public void setRecordId(Long recordId) 
+    public void setRecordId(Long recordId)
     {
         this.recordId = recordId;
     }
 
-    public Long getRecordId() 
+    public Long getRecordId()
     {
         return recordId;
     }
-    public void setUserId(String userId) 
+    public void setUserId(String userId)
     {
         this.userId = userId;
     }
 
-    public String getUserId() 
+    public String getUserId()
     {
         return userId;
     }
-    public void setStatus(String status) 
+    public void setStatus(String status)
     {
         this.status = status;
     }
 
-    public String getStatus() 
+    public String getStatus()
     {
         return status;
     }
-    public void setDate(Date date) 
+    public void setDate(Date date)
     {
         this.date = date;
     }
 
-    public Date getDate() 
+    public Date getDate()
     {
         return date;
     }
-    public void setOnTime(Date onTime) 
+    public void setOnTime(Time onTime)
     {
         this.onTime = onTime;
     }
 
-    public Date getOnTime() 
+    public Date getOnTime()
     {
         return onTime;
     }
-    public void setOffTime(Date offTime) 
+    public void setOffTime(Time offTime)
     {
         this.offTime = offTime;
     }
 
-    public Date getOffTime() 
+    public Date getOffTime()
     {
         return offTime;
     }

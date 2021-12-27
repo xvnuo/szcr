@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.attendance.mapper.AttendRuleMapper">
+    
+    <resultMap type="AttendRule" id="AttendRuleResult">
+        <result property="ruleId"    column="rule_id"    />
+        <result property="ruleName"    column="rule_name"    />
+        <result property="ruleType"    column="rule_type"    />
+        <result property="onTime"    column="on_time"    />
+        <result property="offTime"    column="off_time"    />
+        <result property="workHour"    column="work_hour"    />
+        <result property="workDays"    column="work_days"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <resultMap id="AttendRuleAttendScheduleResult" type="AttendRule" extends="AttendRuleResult">
+        <collection property="attendScheduleList" notNullColumn="sub_schedule_id" javaType="java.util.List" resultMap="AttendScheduleResult" />
+    </resultMap>
+
+    <resultMap type="AttendSchedule" id="AttendScheduleResult">
+        <result property="scheduleId"    column="sub_schedule_id"    />
+        <result property="ruleId"    column="sub_rule_id"    />
+        <result property="scheduleName"    column="sub_schedule_name"    />
+        <result property="workDay"    column="sub_work_day"    />
+        <result property="onTime"    column="sub_on_time"    />
+        <result property="offTime"    column="sub_off_time"    />
+        <result property="status"    column="sub_status"    />
+        <result property="remark"    column="sub_remark"    />
+    </resultMap>
+
+    <sql id="selectAttendRuleVo">
+        select rule_id, rule_name, rule_type, on_time, off_time, work_hour, work_days, status, create_by, create_time, update_by, update_time, remark from attend_rule
+    </sql>
+
+    <select id="selectAttendRuleList" parameterType="AttendRule" resultMap="AttendRuleResult">
+        <include refid="selectAttendRuleVo"/>
+        <where>  
+            <if test="ruleName != null  and ruleName != ''"> and rule_name like concat('%', #{ruleName}, '%')</if>
+            <if test="ruleType != null  and ruleType != ''"> and rule_type = #{ruleType}</if>
+            <if test="onTime != null "> and on_time = #{onTime}</if>
+            <if test="offTime != null "> and off_time = #{offTime}</if>
+            <if test="workHour != null "> and work_hour = #{workHour}</if>
+            <if test="workDays != null  and workDays != ''"> and work_days = #{workDays}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectAttendRuleByRuleId" parameterType="Long" resultMap="AttendRuleAttendScheduleResult">
+        select a.rule_id, a.rule_name, a.rule_type, a.on_time, a.off_time, a.work_hour, a.work_days, a.status, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,
+            b.schedule_id as sub_schedule_id, b.rule_id as sub_rule_id, b.schedule_name as sub_schedule_name, b.work_day as sub_work_day, b.on_time as sub_on_time, b.off_time as sub_off_time, b.status as sub_status, b.remark as sub_remark
+        from attend_rule a
+        left join attend_schedule b on b.rule_id = a.rule_id
+        where a.rule_id = #{ruleId}
+    </select>
+        
+    <insert id="insertAttendRule" parameterType="AttendRule" useGeneratedKeys="true" keyProperty="ruleId">
+        insert into attend_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ruleName != null and ruleName != ''">rule_name,</if>
+            <if test="ruleType != null and ruleType != ''">rule_type,</if>
+            <if test="onTime != null">on_time,</if>
+            <if test="offTime != null">off_time,</if>
+            <if test="workHour != null">work_hour,</if>
+            <if test="workDays != null">work_days,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ruleName != null and ruleName != ''">#{ruleName},</if>
+            <if test="ruleType != null and ruleType != ''">#{ruleType},</if>
+            <if test="onTime != null">#{onTime},</if>
+            <if test="offTime != null">#{offTime},</if>
+            <if test="workHour != null">#{workHour},</if>
+            <if test="workDays != null">#{workDays},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAttendRule" parameterType="AttendRule">
+        update attend_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ruleName != null and ruleName != ''">rule_name = #{ruleName},</if>
+            <if test="ruleType != null and ruleType != ''">rule_type = #{ruleType},</if>
+            <if test="onTime != null">on_time = #{onTime},</if>
+            <if test="offTime != null">off_time = #{offTime},</if>
+            <if test="workHour != null">work_hour = #{workHour},</if>
+            <if test="workDays != null">work_days = #{workDays},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where rule_id = #{ruleId}
+    </update>
+
+    <delete id="deleteAttendRuleByRuleId" parameterType="Long">
+        delete from attend_rule where rule_id = #{ruleId}
+    </delete>
+
+    <delete id="deleteAttendRuleByRuleIds" parameterType="String">
+        delete from attend_rule where rule_id in 
+        <foreach item="ruleId" collection="array" open="(" separator="," close=")">
+            #{ruleId}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteAttendScheduleByRuleIds" parameterType="String">
+        delete from attend_schedule where rule_id in 
+        <foreach item="ruleId" collection="array" open="(" separator="," close=")">
+            #{ruleId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteAttendScheduleByRuleId" parameterType="Long">
+        delete from attend_schedule where rule_id = #{ruleId}
+    </delete>
+
+    <insert id="batchAttendSchedule">
+        insert into attend_schedule( schedule_id, rule_id, schedule_name, work_day, on_time, off_time, status, remark) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.scheduleId}, #{item.ruleId}, #{item.scheduleName}, #{item.workDay}, #{item.onTime}, #{item.offTime}, #{item.status}, #{item.remark})
+        </foreach>
+    </insert>
+</mapper>

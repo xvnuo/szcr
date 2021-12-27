@@ -1,46 +1,57 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="用户ID" prop="userId">
+      <el-form-item label="规则ID" prop="ruleId">
         <el-input
-          v-model="queryParams.userId"
-          placeholder="请输入用户ID"
+          v-model="queryParams.ruleId"
+          placeholder="请输入规则ID"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="考勤状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择考勤状态" clearable size="small">
+      <el-form-item label="班次名称" prop="scheduleName">
+        <el-input
+          v-model="queryParams.scheduleName"
+          placeholder="请输入班次名称"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="工作日" prop="workDay">
+        <el-select v-model="queryParams.workDay" placeholder="请选择工作日" clearable size="small">
           <el-option
-            v-for="dict in dict.type.attend_record_status"
+            v-for="dict in dict.type.attend_work_day"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="考勤日期" prop="date">
-        <el-date-picker clearable size="small"
-                        v-model="queryParams.date"
-                        type="date"
-                        value-format="yyyy-MM-dd"
-                        placeholder="选择考勤日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="上班时间" prop="onTime">
+      <el-form-item label="开始时间" prop="onTime">
         <el-time-picker clearable
                         v-model="queryParams.onTime" format="HH:mm:ss" value-format="HH:mm:ss"
                         :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
-                        placeholder="请选择上班时间">
+                        placeholder="请选择开始时间">
         </el-time-picker>
       </el-form-item>
-      <el-form-item label="下班时间" prop="offTime">
+      <el-form-item label="结束时间" prop="offTime">
         <el-time-picker clearable
                         v-model="queryParams.offTime" format="HH:mm:ss" value-format="HH:mm:ss"
                         :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
-                        placeholder="请选择下班时间">
+                        placeholder="请选择结束时间">
         </el-time-picker>
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
+          <el-option
+            v-for="dict in dict.type.sys_normal_disable"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -56,7 +67,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['attendance:record:add']"
+          v-hasPermi="['attendance:schedule:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -67,7 +78,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['attendance:record:edit']"
+          v-hasPermi="['attendance:schedule:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -78,7 +89,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['attendance:record:remove']"
+          v-hasPermi="['attendance:schedule:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -88,28 +99,29 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['attendance:record:export']"
+          v-hasPermi="['attendance:schedule:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="recordList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="scheduleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="考勤ID" align="center" prop="recordId" />
-      <el-table-column label="用户ID" align="center" prop="userId" />
-      <el-table-column label="考勤状态" align="center" prop="status">
+      <el-table-column label="编号" align="center" prop="scheduleId" />
+      <el-table-column label="规则ID" align="center" prop="ruleId" />
+      <el-table-column label="班次名称" align="center" prop="scheduleName" />
+      <el-table-column label="工作日" align="center" prop="workDay">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.attend_record_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.attend_work_day" :value="scope.row.workDay"/>
         </template>
       </el-table-column>
-      <el-table-column label="考勤日期" align="center" prop="date" width="180">
+      <el-table-column label="开始时间" align="center" prop="onTime" />
+      <el-table-column label="结束时间" align="center" prop="offTime" />
+      <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.date, '{y}-{m}-{d}') }}</span>
+          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="上班时间" align="center" prop="onTime" />
-      <el-table-column label="下班时间" align="center" prop="offTime" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -118,14 +130,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['attendance:record:edit']"
+            v-hasPermi="['attendance:schedule:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['attendance:record:remove']"
+            v-hasPermi="['attendance:schedule:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -139,43 +151,47 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改考勤记录对话框 -->
+    <!-- 添加或修改排班对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="用户ID" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入用户ID" />
+        <el-form-item label="规则ID" prop="ruleId">
+          <el-input v-model="form.ruleId" placeholder="请输入规则ID" />
         </el-form-item>
-        <el-form-item label="考勤状态" prop="status">
-          <el-select v-model="form.status" placeholder="请选择考勤状态">
+        <el-form-item label="班次名称" prop="scheduleName">
+          <el-input v-model="form.scheduleName" placeholder="请输入班次名称" />
+        </el-form-item>
+        <el-form-item label="工作日" prop="workDay">
+          <el-select v-model="form.workDay" placeholder="请选择工作日">
             <el-option
-              v-for="dict in dict.type.attend_record_status"
+              v-for="dict in dict.type.attend_work_day"
               :key="dict.value"
               :label="dict.label"
-              :value="dict.value"
+              :value="parseInt(dict.value)"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="考勤日期" prop="date">
-          <el-date-picker clearable size="small"
-                          v-model="form.date"
-                          type="date"
-                          value-format="yyyy-MM-dd"
-                          placeholder="选择考勤日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="上班时间" prop="onTime">
+        <el-form-item label="开始时间" prop="onTime">
           <el-time-picker clearable
                           v-model="form.onTime" format="HH:mm:ss" value-format="HH:mm:ss"
                           :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
-                          placeholder="请选择上班时间">
+                          placeholder="请选择开始时间">
           </el-time-picker>
         </el-form-item>
-        <el-form-item label="下班时间" prop="offTime">
+        <el-form-item label="结束时间" prop="onTime">
           <el-time-picker clearable
                           v-model="form.offTime" format="HH:mm:ss" value-format="HH:mm:ss"
                           :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
-                          placeholder="请选择下班时间">
+                          placeholder="请选择结束时间">
           </el-time-picker>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-radio-group v-model="form.status">
+            <el-radio
+              v-for="dict in dict.type.sys_normal_disable"
+              :key="dict.value"
+              :label="dict.value"
+            >{{dict.label}}</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -190,11 +206,11 @@
 </template>
 
 <script>
-import { listRecord, getRecord, delRecord, addRecord, updateRecord } from "@/api/attendance/record";
+import { listSchedule, getSchedule, delSchedule, addSchedule, updateSchedule } from "@/api/attendance/schedule";
 
 export default {
-  name: "Record",
-  dicts: ['attend_record_status'],
+  name: "Schedule",
+  dicts: ['attend_work_day', 'sys_normal_disable'],
   data() {
     return {
       // 遮罩层
@@ -209,8 +225,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 考勤记录表格数据
-      recordList: [],
+      // 排班表格数据
+      scheduleList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -219,18 +235,31 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        userId: null,
-        status: null,
-        date: null,
+        ruleId: null,
+        scheduleName: null,
+        workDay: null,
         onTime: null,
         offTime: null,
+        status: null,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        userId: [
-          { required: true, message: "用户ID不能为空", trigger: "blur" }
+        ruleId: [
+          { required: true, message: "规则ID不能为空", trigger: "blur" }
+        ],
+        scheduleName: [
+          { required: true, message: "班次名称不能为空", trigger: "blur" }
+        ],
+        workDay: [
+          { required: true, message: "工作日不能为空", trigger: "change" }
+        ],
+        onTime: [
+          { required: true, message: "开始时间不能为空", trigger: "blur" }
+        ],
+        offTime: [
+          { required: true, message: "结束时间不能为空", trigger: "blur" }
         ],
       }
     };
@@ -239,11 +268,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询考勤记录列表 */
+    /** 查询排班列表 */
     getList() {
       this.loading = true;
-      listRecord(this.queryParams).then(response => {
-        this.recordList = response.rows;
+      listSchedule(this.queryParams).then(response => {
+        this.scheduleList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -256,16 +285,13 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        recordId: null,
-        userId: null,
-        status: null,
-        date: null,
+        scheduleId: null,
+        ruleId: null,
+        scheduleName: null,
+        workDay: null,
         onTime: null,
         offTime: null,
-        createBy: null,
-        createTime: null,
-        updateBy: null,
-        updateTime: null,
+        status: "0",
         remark: null
       };
       this.resetForm("form");
@@ -282,7 +308,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.recordId)
+      this.ids = selection.map(item => item.scheduleId)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -290,30 +316,30 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加考勤记录";
+      this.title = "添加排班";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const recordId = row.recordId || this.ids
-      getRecord(recordId).then(response => {
+      const scheduleId = row.scheduleId || this.ids
+      getSchedule(scheduleId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改考勤记录";
+        this.title = "修改排班";
       });
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.recordId != null) {
-            updateRecord(this.form).then(response => {
+          if (this.form.scheduleId != null) {
+            updateSchedule(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addRecord(this.form).then(response => {
+            addSchedule(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -324,9 +350,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const recordIds = row.recordId || this.ids;
-      this.$modal.confirm('是否确认删除考勤记录编号为"' + recordIds + '"的数据项？').then(function() {
-        return delRecord(recordIds);
+      const scheduleIds = row.scheduleId || this.ids;
+      this.$modal.confirm('是否确认删除排班编号为"' + scheduleIds + '"的数据项？').then(function() {
+        return delSchedule(scheduleIds);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -334,10 +360,11 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('attendance/record/export', {
+      this.download('attendance/schedule/export', {
         ...this.queryParams
-      }, `record_${new Date().getTime()}.xlsx`)
+      }, `schedule_${new Date().getTime()}.xlsx`)
     }
   }
 };
 </script>
+
