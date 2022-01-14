@@ -1,19 +1,19 @@
 package com.ruoyi.attendance.service;
 
 import java.util.List;
-import com.ruoyi.attendance.domain.AttendSchedule;
+import com.ruoyi.common.core.domain.entity.AttendSchedule;
 
 /**
  * 排班Service接口
- * 
+ *
  * @author xvnuo
  * @date 2021-12-19
  */
-public interface IAttendScheduleService 
+public interface IAttendScheduleService
 {
     /**
      * 查询排班
-     * 
+     *
      * @param scheduleId 排班主键
      * @return 排班
      */
@@ -21,7 +21,7 @@ public interface IAttendScheduleService
 
     /**
      * 查询排班列表
-     * 
+     *
      * @param attendSchedule 排班
      * @return 排班集合
      */
@@ -29,7 +29,7 @@ public interface IAttendScheduleService
 
     /**
      * 新增排班
-     * 
+     *
      * @param attendSchedule 排班
      * @return 结果
      */
@@ -37,7 +37,7 @@ public interface IAttendScheduleService
 
     /**
      * 修改排班
-     * 
+     *
      * @param attendSchedule 排班
      * @return 结果
      */
@@ -45,7 +45,7 @@ public interface IAttendScheduleService
 
     /**
      * 批量删除排班
-     * 
+     *
      * @param scheduleIds 需要删除的排班主键集合
      * @return 结果
      */
@@ -53,7 +53,7 @@ public interface IAttendScheduleService
 
     /**
      * 删除排班信息
-     * 
+     *
      * @param scheduleId 排班主键
      * @return 结果
      */

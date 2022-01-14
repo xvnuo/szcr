@@ -1,20 +1,20 @@
 package com.ruoyi.attendance.mapper;
 
 import java.util.List;
-import com.ruoyi.attendance.domain.AttendRule;
-import com.ruoyi.attendance.domain.AttendSchedule;
+import com.ruoyi.common.core.domain.entity.AttendRule;
+import com.ruoyi.common.core.domain.entity.AttendSchedule;
 
 /**
  * 考勤规则Mapper接口
- * 
+ *
  * @author xvnuo
  * @date 2021-12-19
  */
-public interface AttendRuleMapper 
+public interface AttendRuleMapper
 {
     /**
      * 查询考勤规则
-     * 
+     *
      * @param ruleId 考勤规则主键
      * @return 考勤规则
      */
@@ -22,7 +22,7 @@ public interface AttendRuleMapper
 
     /**
      * 查询考勤规则列表
-     * 
+     *
      * @param attendRule 考勤规则
      * @return 考勤规则集合
      */
@@ -30,7 +30,7 @@ public interface AttendRuleMapper
 
     /**
      * 新增考勤规则
-     * 
+     *
      * @param attendRule 考勤规则
      * @return 结果
      */
@@ -38,7 +38,7 @@ public interface AttendRuleMapper
 
     /**
      * 修改考勤规则
-     * 
+     *
      * @param attendRule 考勤规则
      * @return 结果
      */
@@ -46,7 +46,7 @@ public interface AttendRuleMapper
 
     /**
      * 删除考勤规则
-     * 
+     *
      * @param ruleId 考勤规则主键
      * @return 结果
      */
@@ -54,7 +54,7 @@ public interface AttendRuleMapper
 
     /**
      * 批量删除考勤规则
-     * 
+     *
      * @param ruleIds 需要删除的数据主键集合
      * @return 结果
      */
@@ -62,24 +62,24 @@ public interface AttendRuleMapper
 
     /**
      * 批量删除排班
-     * 
+     *
      * @param ruleIds 需要删除的数据主键集合
      * @return 结果
      */
     public int deleteAttendScheduleByRuleIds(Long[] ruleIds);
-    
+
     /**
      * 批量新增排班
-     * 
+     *
      * @param attendScheduleList 排班列表
      * @return 结果
      */
     public int batchAttendSchedule(List<AttendSchedule> attendScheduleList);
-    
+
 
     /**
      * 通过考勤规则主键删除排班信息
-     * 
+     *
      * @param ruleId 考勤规则ID
      * @return 结果
      */

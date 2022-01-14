@@ -1,8 +1,7 @@
 package com.ruoyi.attendance.service;
 
 import java.util.List;
-import com.ruoyi.attendance.domain.AttendRule;
-import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.domain.entity.AttendRule;
 
 /**
  * 考勤规则Service接口

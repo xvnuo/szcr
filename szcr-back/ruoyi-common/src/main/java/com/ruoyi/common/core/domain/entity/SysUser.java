@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,6 +32,10 @@ public class SysUser extends BaseEntity
     /** 部门ID */
     @Excel(name = "部门编号", type = Type.IMPORT)
     private Long deptId;
+
+    /** 规则ID */
+    @Excel(name = "规则编号", type = Type.IMPORT)
+    private Long ruleId;
 
     /** 用户账号 */
     @Excel(name = "登录名称")
@@ -83,6 +88,13 @@ public class SysUser extends BaseEntity
     })
     private SysDept dept;
 
+    /** 规则对象 */
+    @Excels({
+            @Excel(name = "规则名称", targetAttr = "ruleName", type = Type.EXPORT),
+            @Excel(name = "规则类型", targetAttr = "ruleType", type = Type.EXPORT)
+    })
+    private AttendRule rule;
+
     /** 角色对象 */
     private List<SysRole> roles;
 
@@ -133,6 +145,16 @@ public class SysUser extends BaseEntity
     public void setDeptId(Long deptId)
     {
         this.deptId = deptId;
+    }
+
+    public Long getRuleId()
+    {
+        return ruleId;
+    }
+
+    public void setRuleId(Long ruleId)
+    {
+        this.ruleId = ruleId;
     }
 
     @Size(min = 0, max = 30, message = "用户昵称长度不能超过30个字符")

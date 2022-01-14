@@ -1,17 +1,16 @@
 package com.ruoyi.attendance.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.domain.entity.AttendRule;
+import com.ruoyi.common.core.domain.entity.AttendSchedule;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
 import com.ruoyi.common.utils.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
-import com.ruoyi.attendance.domain.AttendSchedule;
 import com.ruoyi.attendance.mapper.AttendRuleMapper;
-import com.ruoyi.attendance.domain.AttendRule;
 import com.ruoyi.attendance.service.IAttendRuleService;
 
 /**

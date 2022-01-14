@@ -1,4 +1,4 @@
-package com.ruoyi.attendance.domain;
+package com.ruoyi.common.core.domain.entity;
 
 import java.sql.Time;
 import java.util.List;
