@@ -40,6 +40,9 @@ public class SysRole extends BaseEntity
     /** 菜单树选择项是否关联显示（ 0：父子不互相关联显示 1：父子互相关联显示） */
     private boolean menuCheckStrictly;
 
+    /** 部门树选择项是否关联显示（0：父子不互相关联显示 1：父子互相关联显示 ） */
+    private boolean deptCheckStrictly;
+
     /** 角色状态（0正常 1停用） */
     @Excel(name = "角色状态", readConverterExp = "0=正常,1=停用")
     private String status;
@@ -52,6 +55,9 @@ public class SysRole extends BaseEntity
 
     /** 菜单组 */
     private Long[] menuIds;
+
+    /** 部门组（数据权限） */
+    private Long[] deptIds;
 
     public SysRole()
     {
@@ -138,6 +144,16 @@ public class SysRole extends BaseEntity
         this.menuCheckStrictly = menuCheckStrictly;
     }
 
+    public boolean isDeptCheckStrictly()
+    {
+        return deptCheckStrictly;
+    }
+
+    public void setDeptCheckStrictly(boolean deptCheckStrictly)
+    {
+        this.deptCheckStrictly = deptCheckStrictly;
+    }
+
     public String getStatus()
     {
         return status;
@@ -178,22 +194,33 @@ public class SysRole extends BaseEntity
         this.menuIds = menuIds;
     }
 
+    public Long[] getDeptIds()
+    {
+        return deptIds;
+    }
+
+    public void setDeptIds(Long[] deptIds)
+    {
+        this.deptIds = deptIds;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("roleId", getRoleId())
-            .append("roleName", getRoleName())
-            .append("roleKey", getRoleKey())
-            .append("roleSort", getRoleSort())
-            .append("dataScope", getDataScope())
-            .append("menuCheckStrictly", isMenuCheckStrictly())
-            .append("status", getStatus())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("remark", getRemark())
-            .toString();
+                .append("roleId", getRoleId())
+                .append("roleName", getRoleName())
+                .append("roleKey", getRoleKey())
+                .append("roleSort", getRoleSort())
+                .append("dataScope", getDataScope())
+                .append("menuCheckStrictly", isMenuCheckStrictly())
+                .append("deptCheckStrictly", isDeptCheckStrictly())
+                .append("status", getStatus())
+                .append("delFlag", getDelFlag())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("remark", getRemark())
+                .toString();
     }
 }

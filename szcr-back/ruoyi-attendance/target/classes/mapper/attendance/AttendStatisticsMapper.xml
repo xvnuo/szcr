@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.attendance.mapper.AttendStatisticsMapper">
+    
+    <resultMap type="AttendStatistics" id="AttendStatisticsResult">
+        <result property="statisticsId"    column="statistics_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="ruleId"    column="rule_id"    />
+        <result property="year"    column="year"    />
+        <result property="month"    column="month"    />
+        <result property="shouldDays"    column="should_days"    />
+        <result property="attendDays"    column="attend_days"    />
+        <result property="lateTimes"    column="late_times"    />
+        <result property="earlyTimes"    column="early_times"    />
+        <result property="absentDays"    column="absent_days"    />
+        <result property="outsideDays"    column="outside_days"    />
+        <result property="overHours"    column="over_hours"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectAttendStatisticsVo">
+        select statistics_id, user_id, rule_id, year, month, should_days, attend_days, late_times, early_times, absent_days, outside_days, over_hours, remark from attend_statistics
+    </sql>
+
+    <select id="selectAttendStatisticsList" parameterType="AttendStatistics" resultMap="AttendStatisticsResult">
+        <include refid="selectAttendStatisticsVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="year != null "> and year = #{year}</if>
+            <if test="month != null "> and month = #{month}</if>
+        </where>
+    </select>
+    
+    <select id="selectAttendStatisticsByStatisticsId" parameterType="Long" resultMap="AttendStatisticsResult">
+        <include refid="selectAttendStatisticsVo"/>
+        where statistics_id = #{statisticsId}
+    </select>
+        
+    <insert id="insertAttendStatistics" parameterType="AttendStatistics" useGeneratedKeys="true" keyProperty="statisticsId">
+        insert into attend_statistics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="ruleId != null">rule_id,</if>
+            <if test="year != null">year,</if>
+            <if test="month != null">month,</if>
+            <if test="shouldDays != null">should_days,</if>
+            <if test="attendDays != null">attend_days,</if>
+            <if test="lateTimes != null">late_times,</if>
+            <if test="earlyTimes != null">early_times,</if>
+            <if test="absentDays != null">absent_days,</if>
+            <if test="outsideDays != null">outside_days,</if>
+            <if test="overHours != null">over_hours,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="ruleId != null">#{ruleId},</if>
+            <if test="year != null">#{year},</if>
+            <if test="month != null">#{month},</if>
+            <if test="shouldDays != null">#{shouldDays},</if>
+            <if test="attendDays != null">#{attendDays},</if>
+            <if test="lateTimes != null">#{lateTimes},</if>
+            <if test="earlyTimes != null">#{earlyTimes},</if>
+            <if test="absentDays != null">#{absentDays},</if>
+            <if test="outsideDays != null">#{outsideDays},</if>
+            <if test="overHours != null">#{overHours},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAttendStatistics" parameterType="AttendStatistics">
+        update attend_statistics
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="ruleId != null">rule_id = #{ruleId},</if>
+            <if test="year != null">year = #{year},</if>
+            <if test="month != null">month = #{month},</if>
+            <if test="shouldDays != null">should_days = #{shouldDays},</if>
+            <if test="attendDays != null">attend_days = #{attendDays},</if>
+            <if test="lateTimes != null">late_times = #{lateTimes},</if>
+            <if test="earlyTimes != null">early_times = #{earlyTimes},</if>
+            <if test="absentDays != null">absent_days = #{absentDays},</if>
+            <if test="outsideDays != null">outside_days = #{outsideDays},</if>
+            <if test="overHours != null">over_hours = #{overHours},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where statistics_id = #{statisticsId}
+    </update>
+
+    <delete id="deleteAttendStatisticsByStatisticsId" parameterType="Long">
+        delete from attend_statistics where statistics_id = #{statisticsId}
+    </delete>
+
+    <delete id="deleteAttendStatisticsByStatisticsIds" parameterType="String">
+        delete from attend_statistics where statistics_id in 
+        <foreach item="statisticsId" collection="array" open="(" separator="," close=")">
+            #{statisticsId}
+        </foreach>
+    </delete>
+</mapper>
