@@ -295,6 +295,16 @@ public class SysUser extends BaseEntity
         this.dept = dept;
     }
 
+    public AttendRule getRule()
+    {
+        return rule;
+    }
+
+    public void setRule(AttendRule rule)
+    {
+        this.rule = rule;
+    }
+
     public List<SysRole> getRoles()
     {
         return roles;
@@ -340,6 +350,7 @@ public class SysUser extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
                 .append("userId", getUserId())
                 .append("deptId", getDeptId())
+                .append("ruleId", getRuleId())
                 .append("userName", getUserName())
                 .append("nickName", getNickName())
                 .append("email", getEmail())
@@ -358,6 +369,7 @@ public class SysUser extends BaseEntity
                 .append("updateTime", getUpdateTime())
                 .append("remark", getRemark())
                 .append("dept", getDept())
+                .append("rule", getRule())
                 .toString();
     }
 }
