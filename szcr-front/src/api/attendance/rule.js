@@ -64,3 +64,39 @@ export function exportRule(query) {
     params: query
   })
 }
+
+// 查询已分配规则的用户列表
+export function assignedUserList(query) {
+  return request({
+    url: '/attendance/rule/authUser/assignedList',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询未分配规则的用户列表
+export function unassignedUserList(query) {
+  return request({
+    url: '/attendance/rule/authUser/unassignedList',
+    method: 'get',
+    params: query
+  })
+}
+
+// 批量取消用户分配的考勤规则
+export function authUserCancelAll(data) {
+  return request({
+    url: '/attendance/rule/authUser/cancelAll',
+    method: 'put',
+    params: data
+  })
+}
+
+// 批量分配考勤规则给用户
+export function authUserSelectAll(data) {
+  return request({
+    url: '/attendance/rule/authUser/selectAll',
+    method: 'put',
+    params: data
+  })
+}

@@ -132,6 +132,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		${params.dataScope}
 	</select>
 
+	<select id="selectAssignedList" parameterType="SysUser" resultMap="SysUserResult">
+    	select distinct u.user_id, u.dept_id, u.rule_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
+    	from sys_user u
+    	    left join sys_dept d on u.dept_id = d.dept_id
+    		left join attend_rule ar on u.rule_id = ar.rule_id
+    		left join sys_user_role ur on u.user_id = ur.user_id
+    		left join sys_role r on r.role_id = ur.role_id
+    	where u.del_flag = '0' and u.rule_id = #{ruleId}
+    	<if test="userName != null and userName != ''">
+    	    AND u.user_name like concat('%', #{userName}, '%')
+    	</if>
+    	<if test="phonenumber != null and phonenumber != ''">
+    	    AND u.phonenumber like concat('%', #{phonenumber}, '%')
+    	</if>
+    	<!-- 数据范围过滤 -->
+    	${params.dataScope}
+    </select>
+
+    <select id="selectUnassignedList" parameterType="SysUser" resultMap="SysUserResult">
+        select distinct u.user_id, u.dept_id, u.rule_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
+        from sys_user u
+            left join sys_dept d on u.dept_id = d.dept_id
+        	left join attend_rule ar on u.rule_id = ar.rule_id
+        	left join sys_user_role ur on u.user_id = ur.user_id
+        	left join sys_role r on r.role_id = ur.role_id
+        where u.del_flag = '0' and (u.rule_id IS NULL or u.rule_id != #{ruleId})
+        <if test="userName != null and userName != ''">
+        	AND u.user_name like concat('%', #{userName}, '%')
+        </if>
+        <if test="phonenumber != null and phonenumber != ''">
+            AND u.phonenumber like concat('%', #{phonenumber}, '%')
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </select>
+
 	<select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
 	    <include refid="selectUserVo"/>
 		where u.user_name = #{userName}
@@ -192,7 +228,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		update sys_user
  		<set>
  			<if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>
- 			<if test="ruleId != null and ruleId != 0">rule_id = #{ruleId},</if>
+ 			<!-- if test="ruleId != null and ruleId != 0">rule_id = #{ruleId},</if -->
+ 			<if test="ruleId != null">rule_id = #{ruleId},</if>
  			<if test="userName != null and userName != ''">user_name = #{userName},</if>
  			<if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
  			<if test="email != null ">email = #{email},</if>
@@ -232,5 +269,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			#{userId}
         </foreach>
  	</delete>
+
+    <!-- 批量更新用户的考勤规则 -->
+    <update id="updateUsersRule">
+        update sys_user set rule_id = #{ruleId} where user_id in
+     	<foreach collection="userIds" item="userId" open="(" separator="," close=")">
+     	    #{userId}
+        </foreach>
+    </update>
 
 </mapper>

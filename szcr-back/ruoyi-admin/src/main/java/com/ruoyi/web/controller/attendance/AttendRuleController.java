@@ -4,6 +4,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.core.domain.entity.AttendRule;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.system.service.ISysUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +36,9 @@ public class AttendRuleController extends BaseController
 {
     @Autowired
     private IAttendRuleService attendRuleService;
+
+    @Autowired
+    private ISysUserService userService;
 
     /**
      * 查询考勤规则列表
@@ -112,5 +117,51 @@ public class AttendRuleController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ruleIds)
     {
         return toAjax(attendRuleService.deleteAttendRuleByRuleIds(ruleIds));
+    }
+
+    /**
+     * 查询已分配该规则的用户列表
+     */
+    @PreAuthorize("@ss.hasPermi('attendance:rule:list')")
+    @GetMapping("/authUser/assignedList")
+    public TableDataInfo assignedList(SysUser user)
+    {
+        startPage();
+        List<SysUser> list = userService.selectAssignedList(user);
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询未分配该规则的用户列表
+     */
+    @PreAuthorize("@ss.hasPermi('attendance:rule:list')")
+    @GetMapping("/authUser/unassignedList")
+    public TableDataInfo unassignedList(SysUser user)
+    {
+        startPage();
+        List<SysUser> list = userService.selectUnassignedList(user);
+        return getDataTable(list);
+    }
+
+    /**
+     * 批量取消分配用户考勤规则
+     */
+    @PreAuthorize("@ss.hasPermi('attendance:rule:edit')")
+    @Log(title = "角色管理", businessType = BusinessType.GRANT)
+    @PutMapping("/authUser/cancelAll")
+    public AjaxResult cancelAuthUserAll(Long ruleId, Long[] userIds)
+    {
+        return toAjax(attendRuleService.cancelUsersRule(userIds));
+    }
+
+    /**
+     * 批量选择用户分配以考勤规则
+     */
+    @PreAuthorize("@ss.hasPermi('attendance:rule:edit')")
+    @Log(title = "角色管理", businessType = BusinessType.GRANT)
+    @PutMapping("/authUser/selectAll")
+    public AjaxResult selectAuthUserAll(Long ruleId, Long[] userIds)
+    {
+        return toAjax(attendRuleService.insertUsersRule(ruleId, userIds));
     }
 }

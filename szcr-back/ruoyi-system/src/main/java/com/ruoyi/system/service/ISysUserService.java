@@ -35,6 +35,22 @@ public interface ISysUserService
     public List<SysUser> selectUnallocatedList(SysUser user);
 
     /**
+     * 根据条件分页查询该规则已分配的用户列表
+     *
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+    public List<SysUser> selectAssignedList(SysUser user);
+
+    /**
+     * 根据条件分页查询该规则未分配的用户列表
+     *
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+    public List<SysUser> selectUnassignedList(SysUser user);
+
+    /**
      * 通过用户名查询用户
      *
      * @param userName 用户名

@@ -66,4 +66,21 @@ public interface IAttendRuleService
      * @return 结果
      */
     public int deleteAttendRuleByRuleId(Long ruleId);
+
+    /**
+     * 批量取消分配规则给用户
+     *
+     * @param userIds 需要取消分配的用户数据ID
+     * @return 结果
+     */
+    public int cancelUsersRule(Long[] userIds);
+
+    /**
+     * 批量选择分配规则给用户
+     *
+     * @param ruleId 规则ID
+     * @param userIds 需要删除的用户数据ID
+     * @return 结果
+     */
+    public int insertUsersRule(Long ruleId, Long[] userIds);
 }

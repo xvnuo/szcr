@@ -113,6 +113,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/attendance/rule-auth',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'user/:ruleId(\\d+)',
+        component: (resolve) => require(['@/views/attendance/rule/authUser'], resolve),
+        name: 'AuthUser',
+        meta: { title: '分配用户', activeMenu: '/attendance/rule'}
+      }
+    ]
+  },
+  {
     path: '/system/dict-data',
     component: Layout,
     hidden: true,

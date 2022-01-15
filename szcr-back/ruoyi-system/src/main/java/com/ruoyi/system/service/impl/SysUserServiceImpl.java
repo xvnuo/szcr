@@ -84,6 +84,30 @@ public class SysUserServiceImpl implements ISysUserService
     }
 
     /**
+     * 根据条件分页查询该规则已分配的用户列表
+     *
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+    @Override
+    @DataScope(deptAlias = "d", userAlias = "u")
+    public List<SysUser> selectAssignedList(SysUser user){
+        return userMapper.selectAssignedList(user);
+    }
+
+    /**
+     * 根据条件分页查询该规则未分配的用户列表
+     *
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+    @Override
+    @DataScope(deptAlias = "d", userAlias = "u")
+    public List<SysUser> selectUnassignedList(SysUser user){
+        return userMapper.selectUnassignedList(user);
+    }
+
+    /**
      * 通过用户名查询用户
      *
      * @param userName 用户名

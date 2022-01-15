@@ -107,21 +107,21 @@
 
     <el-table v-loading="loading" :data="ruleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="编号" align="center" prop="ruleId" />
-      <el-table-column label="名称" align="center" prop="ruleName" />
+      <el-table-column label="规则名称" align="center" prop="ruleName"/>
       <el-table-column label="考勤类型" align="center" prop="ruleType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.attend_rule_type" :value="scope.row.ruleType"/>
         </template>
       </el-table-column>
-      <el-table-column label="上班时间" align="center" prop="onTime" />
+      <!-- el-table-column label="编号" align="center" prop="ruleId" /-->
+      <!-- el-table-column label="上班时间" align="center" prop="onTime" />
       <el-table-column label="下班时间" align="center" prop="offTime" />
       <el-table-column label="每日工时" align="center" prop="workHour" />
       <el-table-column label="工作日" align="center" prop="workDays">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.attend_work_day" :value="scope.row.workDays"/>
         </template>
-      </el-table-column>
+      </el-table-column !-->
       <el-table-column label="状态" align="center" width="100" key="status" >
         <template slot-scope="scope">
           <el-switch
@@ -149,6 +149,13 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['attendance:rule:remove']"
           >删除</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-user"
+            @click="handleAuthUser(scope.row)"
+            v-hasPermi="['attendance:rule:edit']"
+          >分配用户</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -412,6 +419,23 @@ export default {
       this.ids = selection.map(item => item.ruleId)
       this.single = selection.length!==1
       this.multiple = !selection.length
+    },
+    // 更多操作触发
+    handleCommand(command, row) {
+      switch (command) {
+        case "handleDataScope":
+          break;
+        case "handleAuthUser":
+          this.handleAuthUser(row);
+          break;
+        default:
+          break;
+      }
+    },
+    /** 分配用户操作 */
+    handleAuthUser: function(row) {
+      const ruleId = row.ruleId;
+      this.$router.push("/attendance/rule-auth/user/" + ruleId);
     },
     /** 新增按钮操作 */
     handleAdd() {

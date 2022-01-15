@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.ruoyi.common.core.domain.entity.AttendRule;
 import com.ruoyi.common.core.domain.entity.AttendSchedule;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.utils.StringUtils;
@@ -24,6 +26,9 @@ public class AttendRuleServiceImpl implements IAttendRuleService
 {
     @Autowired
     private AttendRuleMapper attendRuleMapper;
+
+    @Autowired
+    private SysUserMapper userMapper;
 
     /**
      * 查询考勤规则
@@ -143,5 +148,28 @@ public class AttendRuleServiceImpl implements IAttendRuleService
                 attendRuleMapper.batchAttendSchedule(list);
             }
         }
+    }
+
+    /**
+     * 批量分配规则给用户
+     *
+     * @param userIds 需要取消授权的用户数据ID
+     * @return 结果
+     */
+    @Override
+    public int cancelUsersRule(Long[] userIds) {
+        return userMapper.updateUsersRule(0L, userIds);
+    }
+
+    /**
+     * 批量选择分配规则给用户
+     *
+     * @param ruleId 角色ID
+     * @param userIds 需要删除的用户数据ID
+     * @return 结果
+     */
+    @Override
+    public int insertUsersRule(Long ruleId, Long[] userIds) {
+        return userMapper.updateUsersRule(ruleId, userIds);
     }
 }
