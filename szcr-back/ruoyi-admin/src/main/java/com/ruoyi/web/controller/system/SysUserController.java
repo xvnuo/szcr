@@ -3,6 +3,9 @@ package com.ruoyi.web.controller.system;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.attendance.service.IAttendRuleService;
+import com.ruoyi.common.core.domain.entity.AttendRule;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,6 +47,9 @@ public class SysUserController extends BaseController
 
     @Autowired
     private ISysRoleService roleService;
+
+    @Autowired
+    private IAttendRuleService ruleService;
 
     /**
      * 获取用户列表
@@ -96,10 +102,14 @@ public class SysUserController extends BaseController
         userService.checkUserDataScope(userId);
         AjaxResult ajax = AjaxResult.success();
         List<SysRole> roles = roleService.selectRoleAll();
+        List<AttendRule> rules = ruleService.selectAttendRuleList(new AttendRule());
+        ajax.put("rules", rules);
         ajax.put("roles", SysUser.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList()));
         if (StringUtils.isNotNull(userId))
         {
-            ajax.put(AjaxResult.DATA_TAG, userService.selectUserById(userId));
+            SysUser user = userService.selectUserById(userId);
+            ajax.put(AjaxResult.DATA_TAG, user);
+            ajax.put("ruleId", user.getRuleId());
             ajax.put("roleIds", roleService.selectRoleListByUserId(userId));
         }
         return ajax;
