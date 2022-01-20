@@ -100,10 +100,12 @@ create table sys_role_menu (
 -- ----------------------------
 drop table if exists attend_record;
 create table attend_record (
-  record_id         bigint(20)      not null auto_increment    comment '考勤ID',
-  user_id           varchar(30)     not null                   comment '用户ID',
-  status            char(1)         default '0'                comment '考勤状态（0正常 1停用）',
-  date              date                                       comment '考勤日期',
+  record_id         bigint(20)     not null                    comment '记录ID',
+  user_id           bigint(20)     not null                    comment '用户ID',
+  attend_date       date           not null                    comment '考勤日期',
+  attend_year       int                                        comment '年份',
+  attend_month      int                                        comment '月份',
+  status            char(1)                                    comment '考勤状态（0正常 1停用）',
   on_time           datetime                                   comment '上班时间',
   off_time          datetime                                   comment '下班时间',
   create_by         varchar(64)     default ''                 comment '创建者',
@@ -112,7 +114,7 @@ create table attend_record (
   update_time       datetime                                   comment '更新时间',
   remark            varchar(500)    default null               comment '备注',
   primary key (record_id)
-) engine=innodb auto_increment=2 comment = '考勤记录表';
+) engine=innodb auto_increment=1 comment = '考勤记录表';
 
 
 -- ----------------------------

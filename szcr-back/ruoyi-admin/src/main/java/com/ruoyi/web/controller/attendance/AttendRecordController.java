@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.attendance;
+package com.ruoyi.attendance.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -23,9 +23,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 考勤记录Controller
- *
+ * 
  * @author xvnuo
- * @date 2021-12-18
+ * @date 2022-01-20
  */
 @RestController
 @RequestMapping("/attendance/record")
@@ -96,10 +96,9 @@ public class AttendRecordController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('attendance:record:remove')")
     @Log(title = "考勤记录", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{recordIds}")
+	@DeleteMapping("/{recordIds}")
     public AjaxResult remove(@PathVariable Long[] recordIds)
     {
         return toAjax(attendRecordService.deleteAttendRecordByRecordIds(recordIds));
     }
 }
-

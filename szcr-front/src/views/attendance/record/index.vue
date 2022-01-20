@@ -1,6 +1,15 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="记录ID" prop="recordId">
+        <el-input
+          v-model="queryParams.recordId"
+          placeholder="请输入记录ID"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="用户ID" prop="userId">
         <el-input
           v-model="queryParams.userId"
@@ -9,6 +18,14 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+      <el-form-item label="考勤日期" prop="attendDate">
+        <el-date-picker clearable size="small"
+          v-model="queryParams.attendDate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="选择考勤日期">
+        </el-date-picker>
       </el-form-item>
       <el-form-item label="考勤状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择考勤状态" clearable size="small">
@@ -19,28 +36,6 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="考勤日期" prop="date">
-        <el-date-picker clearable size="small"
-                        v-model="queryParams.date"
-                        type="date"
-                        value-format="yyyy-MM-dd"
-                        placeholder="选择考勤日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="上班时间" prop="onTime">
-        <el-time-picker clearable
-                        v-model="queryParams.onTime" format="HH:mm:ss" value-format="HH:mm:ss"
-                        :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
-                        placeholder="请选择上班时间">
-        </el-time-picker>
-      </el-form-item>
-      <el-form-item label="下班时间" prop="offTime">
-        <el-time-picker clearable
-                        v-model="queryParams.offTime" format="HH:mm:ss" value-format="HH:mm:ss"
-                        :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
-                        placeholder="请选择下班时间">
-        </el-time-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -96,16 +91,16 @@
 
     <el-table v-loading="loading" :data="recordList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="考勤ID" align="center" prop="recordId" />
+      <el-table-column label="记录ID" align="center" prop="recordId" />
       <el-table-column label="用户ID" align="center" prop="userId" />
+      <el-table-column label="考勤日期" align="center" prop="attendDate" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.attendDate, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="考勤状态" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.attend_record_status" :value="scope.row.status"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="考勤日期" align="center" prop="date" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.date, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="上班时间" align="center" prop="onTime" />
@@ -145,6 +140,34 @@
         <el-form-item label="用户ID" prop="userId">
           <el-input v-model="form.userId" placeholder="请输入用户ID" />
         </el-form-item>
+        <el-form-item label="考勤日期" prop="attendDate">
+          <el-date-picker clearable size="small"
+            v-model="form.attendDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择考勤日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="年份" prop="attendYear">
+          <el-select v-model="form.attendYear" placeholder="请选择年份">
+            <el-option
+              v-for="dict in dict.type.attend_statistics_year"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="月份" prop="attendMonth">
+          <el-select v-model="form.attendMonth" placeholder="请选择月份">
+            <el-option
+              v-for="dict in dict.type.attend_statistics_month"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="考勤状态" prop="status">
           <el-select v-model="form.status" placeholder="请选择考勤状态">
             <el-option
@@ -154,14 +177,6 @@
               :value="dict.value"
             ></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="考勤日期" prop="date">
-          <el-date-picker clearable size="small"
-                          v-model="form.date"
-                          type="date"
-                          value-format="yyyy-MM-dd"
-                          placeholder="选择考勤日期">
-          </el-date-picker>
         </el-form-item>
         <el-form-item label="上班时间" prop="onTime">
           <el-time-picker clearable
@@ -194,7 +209,7 @@ import { listRecord, getRecord, delRecord, addRecord, updateRecord } from "@/api
 
 export default {
   name: "Record",
-  dicts: ['attend_record_status'],
+  dicts: ['attend_statistics_year', 'attend_statistics_month', 'attend_record_status'],
   data() {
     return {
       // 遮罩层
@@ -219,11 +234,10 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        recordId: null,
         userId: null,
+        attendDate: null,
         status: null,
-        date: null,
-        onTime: null,
-        offTime: null,
       },
       // 表单参数
       form: {},
@@ -231,6 +245,9 @@ export default {
       rules: {
         userId: [
           { required: true, message: "用户ID不能为空", trigger: "blur" }
+        ],
+        attendDate: [
+          { required: true, message: "考勤日期不能为空", trigger: "blur" }
         ],
       }
     };
@@ -258,8 +275,10 @@ export default {
       this.form = {
         recordId: null,
         userId: null,
+        attendDate: null,
+        attendYear: null,
+        attendMonth: null,
         status: null,
-        date: null,
         onTime: null,
         offTime: null,
         createBy: null,
