@@ -7,7 +7,7 @@ import com.ruoyi.attendance.domain.AttendStatistics;
  * 考勤统计Service接口
  * 
  * @author xvnuo
- * @date 2022-01-12
+ * @date 2022-01-21
  */
 public interface IAttendStatisticsService 
 {

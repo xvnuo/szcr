@@ -5,15 +5,15 @@ import com.ruoyi.attendance.domain.AttendStatistics;
 
 /**
  * 考勤统计Mapper接口
- *
+ * 
  * @author xvnuo
- * @date 2022-01-12
+ * @date 2022-01-21
  */
-public interface AttendStatisticsMapper
+public interface AttendStatisticsMapper 
 {
     /**
      * 查询考勤统计
-     *
+     * 
      * @param statisticsId 考勤统计主键
      * @return 考勤统计
      */
@@ -21,7 +21,7 @@ public interface AttendStatisticsMapper
 
     /**
      * 查询考勤统计列表
-     *
+     * 
      * @param attendStatistics 考勤统计
      * @return 考勤统计集合
      */
@@ -29,7 +29,7 @@ public interface AttendStatisticsMapper
 
     /**
      * 新增考勤统计
-     *
+     * 
      * @param attendStatistics 考勤统计
      * @return 结果
      */
@@ -37,7 +37,7 @@ public interface AttendStatisticsMapper
 
     /**
      * 修改考勤统计
-     *
+     * 
      * @param attendStatistics 考勤统计
      * @return 结果
      */
@@ -45,7 +45,7 @@ public interface AttendStatisticsMapper
 
     /**
      * 删除考勤统计
-     *
+     * 
      * @param statisticsId 考勤统计主键
      * @return 结果
      */
@@ -53,7 +53,7 @@ public interface AttendStatisticsMapper
 
     /**
      * 批量删除考勤统计
-     *
+     * 
      * @param statisticsIds 需要删除的数据主键集合
      * @return 结果
      */

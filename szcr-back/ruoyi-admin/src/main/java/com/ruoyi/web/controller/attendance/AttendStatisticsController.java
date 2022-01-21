@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.attendance;
+package com.ruoyi.attendance.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -23,9 +23,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 考勤统计Controller
- *
+ * 
  * @author xvnuo
- * @date 2022-01-12
+ * @date 2022-01-21
  */
 @RestController
 @RequestMapping("/attendance/statistics")
