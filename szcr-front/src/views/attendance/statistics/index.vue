@@ -1,6 +1,16 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="考勤月份" prop="attendMonth">
+        <el-select v-model="queryParams.attendMonth" placeholder="请选择考勤月份" clearable size="small">
+          <el-option
+            v-for="dict in dict.type.attend_year_month"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="用户名" prop="userName">
         <el-input
           v-model="queryParams.userName"
@@ -10,25 +20,14 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="年份" prop="attendYear">
-        <el-select v-model="queryParams.attendYear" placeholder="请选择年份" clearable size="small">
-          <el-option
-            v-for="dict in dict.type.attend_statistics_year"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="月份" prop="attendMonth">
-        <el-select v-model="queryParams.attendMonth" placeholder="请选择月份" clearable size="small">
-          <el-option
-            v-for="dict in dict.type.attend_statistics_month"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+      <el-form-item label="规则名称" prop="ruleName">
+        <el-input
+          v-model="queryParams.ruleName"
+          placeholder="请输入规则名称"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -85,26 +84,22 @@
     <el-table v-loading="loading" :data="statisticsList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="统计编号" align="center" prop="statisticsId" />
-      <el-table-column label="用户名称" align="center" prop="userName" />
+      <el-table-column label="考勤月份" align="center" prop="attendMonth">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.attend_year_month" :value="scope.row.attendMonth"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="用户编号" align="center" prop="userId" />
+      <el-table-column label="用户名" align="center" prop="userName" />
       <el-table-column label="规则名称" align="center" prop="ruleName" />
-      <el-table-column label="年份" align="center" prop="attendYear">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.attend_statistics_year" :value="scope.row.attendYear"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="月份" align="center" prop="attendMonth">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.attend_statistics_month" :value="scope.row.attendMonth"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="应到天数" align="center" prop="shouldDays" />
       <el-table-column label="实到天数" align="center" prop="attendDays" />
+      <el-table-column label="正常天数" align="center" prop="normalDays" />
+      <el-table-column label="外勤天数" align="center" prop="outsideDays" />
+      <el-table-column label="缺勤天数" align="center" prop="absenceDays" />
+      <el-table-column label="请假天数" align="center" prop="leaveDays" />
       <el-table-column label="迟到次数" align="center" prop="lateTimes" />
       <el-table-column label="早退次数" align="center" prop="earlyTimes" />
-      <el-table-column label="缺勤天数" align="center" prop="absentDays" />
-      <el-table-column label="外勤天数" align="center" prop="outsideDays" />
       <el-table-column label="加班时长" align="center" prop="overHours" />
-      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -133,40 +128,45 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改考勤统计对话框 -->
+    <!-- 添加或修改月度考勤统计对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="用户ID" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入用户ID" />
-        </el-form-item>
-        <el-form-item label="规则ID" prop="ruleId">
-          <el-input v-model="form.ruleId" placeholder="请输入规则ID" />
-        </el-form-item>
-        <el-form-item label="年份" prop="attendYear">
-          <el-select v-model="form.attendYear" placeholder="请选择年份">
+        <el-form-item label="考勤月份" prop="attendMonth">
+          <el-select v-model="form.attendMonth" placeholder="请选择考勤月份">
             <el-option
-              v-for="dict in dict.type.attend_statistics_year"
+              v-for="dict in dict.type.attend_year_month"
               :key="dict.value"
               :label="dict.label"
-              :value="parseInt(dict.value)"
+              :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="月份" prop="attendMonth">
-          <el-select v-model="form.attendMonth" placeholder="请选择月份">
-            <el-option
-              v-for="dict in dict.type.attend_statistics_month"
-              :key="dict.value"
-              :label="dict.label"
-              :value="parseInt(dict.value)"
-            ></el-option>
-          </el-select>
+        <el-form-item label="用户编号" prop="userId">
+          <el-input v-model="form.userId" placeholder="请输入用户编号" />
         </el-form-item>
-        <el-form-item label="应到天数" prop="shouldDays">
-          <el-input v-model="form.shouldDays" placeholder="请输入应到天数" />
+        <el-form-item label="用户名" prop="userName">
+          <el-input v-model="form.userName" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item label="规则编号" prop="ruleId">
+          <el-input v-model="form.ruleId" placeholder="请输入规则编号" />
+        </el-form-item>
+        <el-form-item label="规则名称" prop="ruleName">
+          <el-input v-model="form.ruleName" placeholder="请输入规则名称" />
         </el-form-item>
         <el-form-item label="实到天数" prop="attendDays">
           <el-input v-model="form.attendDays" placeholder="请输入实到天数" />
+        </el-form-item>
+        <el-form-item label="正常天数" prop="normalDays">
+          <el-input v-model="form.normalDays" placeholder="请输入正常天数" />
+        </el-form-item>
+        <el-form-item label="外勤天数" prop="outsideDays">
+          <el-input v-model="form.outsideDays" placeholder="请输入外勤天数" />
+        </el-form-item>
+        <el-form-item label="缺勤天数" prop="absenceDays">
+          <el-input v-model="form.absenceDays" placeholder="请输入缺勤天数" />
+        </el-form-item>
+        <el-form-item label="请假天数" prop="leaveDays">
+          <el-input v-model="form.leaveDays" placeholder="请输入请假天数" />
         </el-form-item>
         <el-form-item label="迟到次数" prop="lateTimes">
           <el-input v-model="form.lateTimes" placeholder="请输入迟到次数" />
@@ -174,17 +174,8 @@
         <el-form-item label="早退次数" prop="earlyTimes">
           <el-input v-model="form.earlyTimes" placeholder="请输入早退次数" />
         </el-form-item>
-        <el-form-item label="缺勤天数" prop="absentDays">
-          <el-input v-model="form.absentDays" placeholder="请输入缺勤天数" />
-        </el-form-item>
-        <el-form-item label="外勤天数" prop="outsideDays">
-          <el-input v-model="form.outsideDays" placeholder="请输入外勤天数" />
-        </el-form-item>
         <el-form-item label="加班时长" prop="overHours">
           <el-input v-model="form.overHours" placeholder="请输入加班时长" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -200,7 +191,7 @@ import { listStatistics, getStatistics, delStatistics, addStatistics, updateStat
 
 export default {
   name: "Statistics",
-  dicts: ['attend_statistics_year', 'attend_statistics_month'],
+  dicts: ['attend_year_month'],
   data() {
     return {
       // 遮罩层
@@ -215,7 +206,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 考勤统计表格数据
+      // 月度考勤统计表格数据
       statisticsList: [],
       // 弹出层标题
       title: "",
@@ -225,25 +216,19 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        userName: null,
-        attendYear: null,
         attendMonth: null,
+        userName: null,
+        ruleName: null,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        userId: [
-          { required: true, message: "用户ID不能为空", trigger: "blur" }
-        ],
-        ruleId: [
-          { required: true, message: "规则ID不能为空", trigger: "blur" }
-        ],
-        attendYear: [
-          { required: true, message: "年份不能为空", trigger: "change" }
-        ],
         attendMonth: [
-          { required: true, message: "月份不能为空", trigger: "change" }
+          { required: true, message: "考勤月份不能为空", trigger: "change" }
+        ],
+        userId: [
+          { required: true, message: "用户编号不能为空", trigger: "blur" }
         ],
       }
     };
@@ -252,7 +237,7 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询考勤统计列表 */
+    /** 查询月度考勤统计列表 */
     getList() {
       this.loading = true;
       listStatistics(this.queryParams).then(response => {
@@ -270,18 +255,19 @@ export default {
     reset() {
       this.form = {
         statisticsId: null,
-        userId: null,
-        ruleId: null,
-        attendYear: null,
         attendMonth: null,
-        shouldDays: null,
+        userId: null,
+        userName: null,
+        ruleId: null,
+        ruleName: null,
         attendDays: null,
+        normalDays: null,
+        outsideDays: null,
+        absenceDays: null,
+        leaveDays: null,
         lateTimes: null,
         earlyTimes: null,
-        absentDays: null,
-        outsideDays: null,
-        overHours: null,
-        remark: null
+        overHours: null
       };
       this.resetForm("form");
     },
@@ -305,7 +291,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加考勤统计";
+      this.title = "添加月度考勤统计";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -314,7 +300,7 @@ export default {
       getStatistics(statisticsId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改考勤统计";
+        this.title = "修改月度考勤统计";
       });
     },
     /** 提交按钮 */
@@ -340,7 +326,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const statisticsIds = row.statisticsId || this.ids;
-      this.$modal.confirm('是否确认删除考勤统计编号为"' + statisticsIds + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除月度考勤统计编号为"' + statisticsIds + '"的数据项？').then(function() {
         return delStatistics(statisticsIds);
       }).then(() => {
         this.getList();

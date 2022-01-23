@@ -110,7 +110,11 @@
           <span>{{ parseTime(scope.row.attendDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="星期几" align="center" prop="weekdayNum" />
+      <el-table-column label="星期几" align="center" prop="weekdayNum">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.attend_work_day" :value="scope.row.weekdayNum"/>
+        </template>
+      </el-table-column>
       <el-table-column label="是否工作日" align="center" prop="isWorkday">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.isWorkday"/>
@@ -123,21 +127,14 @@
       </el-table-column>
       <el-table-column label="考勤时长" align="center" prop="attendHour" />
       <el-table-column label="排班序号" align="center" prop="scheduleSort" />
-      <el-table-column label="上班时间" align="center" prop="onTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.onTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="上班时间" align="center" prop="onTime" />
+
       <el-table-column label="上班状态" align="center" prop="onStatus">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.attend_record_status" :value="scope.row.onStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="下班时间" align="center" prop="offTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.offTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="下班时间" align="center" prop="offTime" />
       <el-table-column label="下班状态" align="center" prop="offStatus">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.attend_record_status" :value="scope.row.offStatus"/>
@@ -163,7 +160,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -191,7 +188,12 @@
         </el-form-item>
         <el-form-item label="星期几" prop="weekdayNum">
           <el-select v-model="form.weekdayNum" placeholder="请选择星期几">
-            <el-option label="请选择字典生成" value="" />
+            <el-option
+              v-for="dict in dict.type.attend_work_day"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否工作日" prop="isWorkday">
@@ -218,12 +220,11 @@
           <el-input v-model="form.scheduleSort" placeholder="请输入排班序号" />
         </el-form-item>
         <el-form-item label="上班时间" prop="onTime">
-          <el-date-picker clearable size="small"
-            v-model="form.onTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择上班时间">
-          </el-date-picker>
+          <el-time-picker clearable
+                          v-model="form.onTime" format="HH:mm:ss" value-format="HH:mm:ss"
+                          :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
+                          placeholder="请选择上班时间">
+          </el-time-picker>
         </el-form-item>
         <el-form-item label="上班状态" prop="onStatus">
           <el-select v-model="form.onStatus" placeholder="请选择上班状态">
@@ -236,12 +237,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="下班时间" prop="offTime">
-          <el-date-picker clearable size="small"
-            v-model="form.offTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择下班时间">
-          </el-date-picker>
+          <el-time-picker clearable
+                          v-model="form.offTime" format="HH:mm:ss" value-format="HH:mm:ss"
+                          :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
+                          placeholder="请选择下班时间">
+          </el-time-picker>
         </el-form-item>
         <el-form-item label="下班状态" prop="offStatus">
           <el-select v-model="form.offStatus" placeholder="请选择下班状态">
@@ -270,7 +270,7 @@ import { listRecord, getRecord, delRecord, addRecord, updateRecord } from "@/api
 
 export default {
   name: "Record",
-  dicts: ['sys_yes_no', 'attend_year_month', 'attend_record_status', 'attend_record_status'],
+  dicts: ['sys_yes_no', 'attend_year_month', 'attend_record_status', 'attend_record_status', 'attend_work_day'],
   data() {
     return {
       // 遮罩层
