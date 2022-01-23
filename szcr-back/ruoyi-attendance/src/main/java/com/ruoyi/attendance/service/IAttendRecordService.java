@@ -7,7 +7,7 @@ import com.ruoyi.attendance.domain.AttendRecord;
  * 考勤记录Service接口
  * 
  * @author xvnuo
- * @date 2022-01-20
+ * @date 2022-01-23
  */
 public interface IAttendRecordService 
 {

@@ -10,25 +10,31 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="年份" prop="attendYear">
-        <el-select v-model="queryParams.attendYear" placeholder="请选择年份" clearable size="small">
+      <el-form-item label="考勤类型" prop="attendType">
+        <el-select v-model="queryParams.attendType" placeholder="请选择考勤类型" clearable size="small">
           <el-option
-            v-for="dict in dict.type.attend_statistics_year"
+            v-for="dict in dict.type.attend_record_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="月份" prop="attendMonth">
-        <el-select v-model="queryParams.attendMonth" placeholder="请选择月份" clearable size="small">
-          <el-option
-            v-for="dict in dict.type.attend_statistics_month"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+      <el-form-item label="开始时间" prop="startTime">
+        <el-date-picker clearable size="small"
+          v-model="queryParams.startTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="选择开始时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="结束时间" prop="endTime">
+        <el-date-picker clearable size="small"
+          v-model="queryParams.endTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="选择结束时间">
+        </el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -44,7 +50,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['attendance:statistics:add']"
+          v-hasPermi="['attendance:special:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -55,7 +61,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['attendance:statistics:edit']"
+          v-hasPermi="['attendance:special:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -66,7 +72,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['attendance:statistics:remove']"
+          v-hasPermi="['attendance:special:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -76,34 +82,33 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['attendance:statistics:export']"
+          v-hasPermi="['attendance:special:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="statisticsList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="specialList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="统计编号" align="center" prop="statisticsId" />
-      <el-table-column label="用户名称" align="center" prop="userName" />
-      <el-table-column label="规则名称" align="center" prop="ruleName" />
-      <el-table-column label="年份" align="center" prop="attendYear">
+      <el-table-column label="异常考勤ID" align="center" prop="specialId" />
+      <el-table-column label="用户ID" align="center" prop="userId" />
+      <el-table-column label="用户名" align="center" prop="userName" />
+      <el-table-column label="考勤类型" align="center" prop="attendType">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.attend_statistics_year" :value="scope.row.attendYear"/>
+          <dict-tag :options="dict.type.attend_record_status" :value="scope.row.attendType"/>
         </template>
       </el-table-column>
-      <el-table-column label="月份" align="center" prop="attendMonth">
+      <el-table-column label="开始时间" align="center" prop="startTime" width="180">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.attend_statistics_month" :value="scope.row.attendMonth"/>
+          <span>{{ parseTime(scope.row.startTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="应到天数" align="center" prop="shouldDays" />
-      <el-table-column label="实到天数" align="center" prop="attendDays" />
-      <el-table-column label="迟到次数" align="center" prop="lateTimes" />
-      <el-table-column label="早退次数" align="center" prop="earlyTimes" />
-      <el-table-column label="缺勤天数" align="center" prop="absentDays" />
-      <el-table-column label="外勤天数" align="center" prop="outsideDays" />
-      <el-table-column label="加班时长" align="center" prop="overHours" />
+      <el-table-column label="结束时间" align="center" prop="endTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.endTime, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="时长" align="center" prop="attendHour" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -112,19 +117,19 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['attendance:statistics:edit']"
+            v-hasPermi="['attendance:special:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['attendance:statistics:remove']"
+            v-hasPermi="['attendance:special:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-
+    
     <pagination
       v-show="total>0"
       :total="total"
@@ -133,55 +138,40 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改考勤统计对话框 -->
+    <!-- 添加或修改异常考勤对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="用户ID" prop="userId">
           <el-input v-model="form.userId" placeholder="请输入用户ID" />
         </el-form-item>
-        <el-form-item label="规则ID" prop="ruleId">
-          <el-input v-model="form.ruleId" placeholder="请输入规则ID" />
+        <el-form-item label="用户名" prop="userName">
+          <el-input v-model="form.userName" placeholder="请输入用户名" />
         </el-form-item>
-        <el-form-item label="年份" prop="attendYear">
-          <el-select v-model="form.attendYear" placeholder="请选择年份">
+        <el-form-item label="考勤类型" prop="attendType">
+          <el-select v-model="form.attendType" placeholder="请选择考勤类型">
             <el-option
-              v-for="dict in dict.type.attend_statistics_year"
+              v-for="dict in dict.type.attend_record_status"
               :key="dict.value"
               :label="dict.label"
-              :value="parseInt(dict.value)"
+              :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="月份" prop="attendMonth">
-          <el-select v-model="form.attendMonth" placeholder="请选择月份">
-            <el-option
-              v-for="dict in dict.type.attend_statistics_month"
-              :key="dict.value"
-              :label="dict.label"
-              :value="parseInt(dict.value)"
-            ></el-option>
-          </el-select>
+        <el-form-item label="开始时间" prop="startTime">
+          <el-date-picker clearable size="small"
+            v-model="form.startTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择开始时间">
+          </el-date-picker>
         </el-form-item>
-        <el-form-item label="应到天数" prop="shouldDays">
-          <el-input v-model="form.shouldDays" placeholder="请输入应到天数" />
-        </el-form-item>
-        <el-form-item label="实到天数" prop="attendDays">
-          <el-input v-model="form.attendDays" placeholder="请输入实到天数" />
-        </el-form-item>
-        <el-form-item label="迟到次数" prop="lateTimes">
-          <el-input v-model="form.lateTimes" placeholder="请输入迟到次数" />
-        </el-form-item>
-        <el-form-item label="早退次数" prop="earlyTimes">
-          <el-input v-model="form.earlyTimes" placeholder="请输入早退次数" />
-        </el-form-item>
-        <el-form-item label="缺勤天数" prop="absentDays">
-          <el-input v-model="form.absentDays" placeholder="请输入缺勤天数" />
-        </el-form-item>
-        <el-form-item label="外勤天数" prop="outsideDays">
-          <el-input v-model="form.outsideDays" placeholder="请输入外勤天数" />
-        </el-form-item>
-        <el-form-item label="加班时长" prop="overHours">
-          <el-input v-model="form.overHours" placeholder="请输入加班时长" />
+        <el-form-item label="结束时间" prop="endTime">
+          <el-date-picker clearable size="small"
+            v-model="form.endTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择结束时间">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -196,11 +186,11 @@
 </template>
 
 <script>
-import { listStatistics, getStatistics, delStatistics, addStatistics, updateStatistics } from "@/api/attendance/statistics";
+import { listSpecial, getSpecial, delSpecial, addSpecial, updateSpecial } from "@/api/attendance/special";
 
 export default {
-  name: "Statistics",
-  dicts: ['attend_statistics_year', 'attend_statistics_month'],
+  name: "Special",
+  dicts: ['attend_record_status'],
   data() {
     return {
       // 遮罩层
@@ -215,8 +205,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 考勤统计表格数据
-      statisticsList: [],
+      // 异常考勤表格数据
+      specialList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -226,8 +216,9 @@ export default {
         pageNum: 1,
         pageSize: 10,
         userName: null,
-        attendYear: null,
-        attendMonth: null,
+        attendType: null,
+        startTime: null,
+        endTime: null,
       },
       // 表单参数
       form: {},
@@ -236,14 +227,8 @@ export default {
         userId: [
           { required: true, message: "用户ID不能为空", trigger: "blur" }
         ],
-        ruleId: [
-          { required: true, message: "规则ID不能为空", trigger: "blur" }
-        ],
-        attendYear: [
-          { required: true, message: "年份不能为空", trigger: "change" }
-        ],
-        attendMonth: [
-          { required: true, message: "月份不能为空", trigger: "change" }
+        userName: [
+          { required: true, message: "用户名不能为空", trigger: "blur" }
         ],
       }
     };
@@ -252,11 +237,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询考勤统计列表 */
+    /** 查询异常考勤列表 */
     getList() {
       this.loading = true;
-      listStatistics(this.queryParams).then(response => {
-        this.statisticsList = response.rows;
+      listSpecial(this.queryParams).then(response => {
+        this.specialList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -269,18 +254,17 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        statisticsId: null,
+        specialId: null,
         userId: null,
-        ruleId: null,
-        attendYear: null,
-        attendMonth: null,
-        shouldDays: null,
-        attendDays: null,
-        lateTimes: null,
-        earlyTimes: null,
-        absentDays: null,
-        outsideDays: null,
-        overHours: null,
+        userName: null,
+        attendType: null,
+        startTime: null,
+        endTime: null,
+        attendHour: null,
+        createBy: null,
+        createTime: null,
+        updateBy: null,
+        updateTime: null,
         remark: null
       };
       this.resetForm("form");
@@ -297,7 +281,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.statisticsId)
+      this.ids = selection.map(item => item.specialId)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -305,30 +289,30 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加考勤统计";
+      this.title = "添加异常考勤";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const statisticsId = row.statisticsId || this.ids
-      getStatistics(statisticsId).then(response => {
+      const specialId = row.specialId || this.ids
+      getSpecial(specialId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改考勤统计";
+        this.title = "修改异常考勤";
       });
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.statisticsId != null) {
-            updateStatistics(this.form).then(response => {
+          if (this.form.specialId != null) {
+            updateSpecial(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addStatistics(this.form).then(response => {
+            addSpecial(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -339,9 +323,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const statisticsIds = row.statisticsId || this.ids;
-      this.$modal.confirm('是否确认删除考勤统计编号为"' + statisticsIds + '"的数据项？').then(function() {
-        return delStatistics(statisticsIds);
+      const specialIds = row.specialId || this.ids;
+      this.$modal.confirm('是否确认删除异常考勤编号为"' + specialIds + '"的数据项？').then(function() {
+        return delSpecial(specialIds);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -349,9 +333,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('attendance/statistics/export', {
+      this.download('attendance/special/export', {
         ...this.queryParams
-      }, `statistics_${new Date().getTime()}.xlsx`)
+      }, `special_${new Date().getTime()}.xlsx`)
     }
   }
 };

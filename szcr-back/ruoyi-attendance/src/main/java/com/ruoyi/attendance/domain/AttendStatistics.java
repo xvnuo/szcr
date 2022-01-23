@@ -6,10 +6,10 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 考勤统计对象 attend_statistics
+ * 月度考勤统计对象 attend_statistics
  * 
  * @author xvnuo
- * @date 2022-01-21
+ * @date 2022-01-23
  */
 public class AttendStatistics extends BaseEntity
 {
@@ -18,41 +18,56 @@ public class AttendStatistics extends BaseEntity
     /** 统计编号 */
     private Long statisticsId;
 
-    /** 用户ID */
-    @Excel(name = "用户ID")
+    /** 考勤月份 */
+    @Excel(name = "考勤月份")
+    private String attendMonth;
+
+    /** 用户编号 */
+    @Excel(name = "用户编号")
     private Long userId;
 
-    /** 规则ID */
-    @Excel(name = "规则ID")
+    /** 用户名 */
+    @Excel(name = "用户名")
+    private String userName;
+
+    /** 规则编号 */
     private Long ruleId;
 
-    /** 年份 */
-    @Excel(name = "年份")
-    private Long attendYear;
-
-    /** 月份 */
-    @Excel(name = "月份")
-    private Long attendMonth;
-
-    /** 应到天数 */
-    @Excel(name = "应到天数")
-    private Long shouldDays;
+    /** 规则名称 */
+    @Excel(name = "规则名称")
+    private String ruleName;
 
     /** 实到天数 */
     @Excel(name = "实到天数")
-    private Long attendDays;
+    private Double attendDays;
 
-    /** 迟到次数 */
-    @Excel(name = "迟到次数")
-    private Long lateTimes;
+    /** 正常天数 */
+    @Excel(name = "正常天数")
+    private Double normalDays;
 
-    /** 早退次数 */
-    @Excel(name = "早退次数")
-    private Long earlyTimes;
+    /** 外勤天数 */
+    @Excel(name = "外勤天数")
+    private Double outsideDays;
 
     /** 缺勤天数 */
     @Excel(name = "缺勤天数")
-    private Long absentDays;
+    private Double absenceDays;
+
+    /** 请假天数 */
+    @Excel(name = "请假天数")
+    private Double leaveDays;
+
+    /** 迟到次数 */
+    @Excel(name = "迟到次数")
+    private Integer lateTimes;
+
+    /** 早退次数 */
+    @Excel(name = "早退次数")
+    private Integer earlyTimes;
+
+    /** 加班时长 */
+    @Excel(name = "加班时长")
+    private Double overHours;
 
     public void setStatisticsId(Long statisticsId) 
     {
@@ -63,6 +78,15 @@ public class AttendStatistics extends BaseEntity
     {
         return statisticsId;
     }
+    public void setAttendMonth(String attendMonth) 
+    {
+        this.attendMonth = attendMonth;
+    }
+
+    public String getAttendMonth() 
+    {
+        return attendMonth;
+    }
     public void setUserId(Long userId) 
     {
         this.userId = userId;
@@ -71,6 +95,15 @@ public class AttendStatistics extends BaseEntity
     public Long getUserId() 
     {
         return userId;
+    }
+    public void setUserName(String userName) 
+    {
+        this.userName = userName;
+    }
+
+    public String getUserName() 
+    {
+        return userName;
     }
     public void setRuleId(Long ruleId) 
     {
@@ -81,83 +114,105 @@ public class AttendStatistics extends BaseEntity
     {
         return ruleId;
     }
-    public void setAttendYear(Long attendYear) 
+    public void setRuleName(String ruleName) 
     {
-        this.attendYear = attendYear;
+        this.ruleName = ruleName;
     }
 
-    public Long getAttendYear() 
+    public String getRuleName() 
     {
-        return attendYear;
+        return ruleName;
     }
-    public void setAttendMonth(Long attendMonth) 
-    {
-        this.attendMonth = attendMonth;
-    }
-
-    public Long getAttendMonth() 
-    {
-        return attendMonth;
-    }
-    public void setShouldDays(Long shouldDays) 
-    {
-        this.shouldDays = shouldDays;
-    }
-
-    public Long getShouldDays() 
-    {
-        return shouldDays;
-    }
-    public void setAttendDays(Long attendDays) 
+    public void setAttendDays(Double attendDays) 
     {
         this.attendDays = attendDays;
     }
 
-    public Long getAttendDays() 
+    public Double getAttendDays() 
     {
         return attendDays;
     }
-    public void setLateTimes(Long lateTimes) 
+    public void setNormalDays(Double normalDays) 
+    {
+        this.normalDays = normalDays;
+    }
+
+    public Double getNormalDays() 
+    {
+        return normalDays;
+    }
+    public void setOutsideDays(Double outsideDays) 
+    {
+        this.outsideDays = outsideDays;
+    }
+
+    public Double getOutsideDays() 
+    {
+        return outsideDays;
+    }
+    public void setAbsenceDays(Double absenceDays) 
+    {
+        this.absenceDays = absenceDays;
+    }
+
+    public Double getAbsenceDays() 
+    {
+        return absenceDays;
+    }
+    public void setLeaveDays(Double leaveDays) 
+    {
+        this.leaveDays = leaveDays;
+    }
+
+    public Double getLeaveDays() 
+    {
+        return leaveDays;
+    }
+    public void setLateTimes(Integer lateTimes) 
     {
         this.lateTimes = lateTimes;
     }
 
-    public Long getLateTimes() 
+    public Integer getLateTimes() 
     {
         return lateTimes;
     }
-    public void setEarlyTimes(Long earlyTimes) 
+    public void setEarlyTimes(Integer earlyTimes) 
     {
         this.earlyTimes = earlyTimes;
     }
 
-    public Long getEarlyTimes() 
+    public Integer getEarlyTimes() 
     {
         return earlyTimes;
     }
-    public void setAbsentDays(Long absentDays) 
+    public void setOverHours(Double overHours) 
     {
-        this.absentDays = absentDays;
+        this.overHours = overHours;
     }
 
-    public Long getAbsentDays() 
+    public Double getOverHours() 
     {
-        return absentDays;
+        return overHours;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("statisticsId", getStatisticsId())
-            .append("userId", getUserId())
-            .append("ruleId", getRuleId())
-            .append("attendYear", getAttendYear())
             .append("attendMonth", getAttendMonth())
-            .append("shouldDays", getShouldDays())
+            .append("userId", getUserId())
+            .append("userName", getUserName())
+            .append("ruleId", getRuleId())
+            .append("ruleName", getRuleName())
             .append("attendDays", getAttendDays())
+            .append("normalDays", getNormalDays())
+            .append("outsideDays", getOutsideDays())
+            .append("absenceDays", getAbsenceDays())
+            .append("leaveDays", getLeaveDays())
             .append("lateTimes", getLateTimes())
             .append("earlyTimes", getEarlyTimes())
-            .append("absentDays", getAbsentDays())
+            .append("overHours", getOverHours())
             .toString();
     }
 }

@@ -22,10 +22,10 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
- * 考勤统计Controller
+ * 月度考勤统计Controller
  * 
  * @author xvnuo
- * @date 2022-01-21
+ * @date 2022-01-23
  */
 @RestController
 @RequestMapping("/attendance/statistics")
@@ -35,7 +35,7 @@ public class AttendStatisticsController extends BaseController
     private IAttendStatisticsService attendStatisticsService;
 
     /**
-     * 查询考勤统计列表
+     * 查询月度考勤统计列表
      */
     @PreAuthorize("@ss.hasPermi('attendance:statistics:list')")
     @GetMapping("/list")
@@ -47,20 +47,20 @@ public class AttendStatisticsController extends BaseController
     }
 
     /**
-     * 导出考勤统计列表
+     * 导出月度考勤统计列表
      */
     @PreAuthorize("@ss.hasPermi('attendance:statistics:export')")
-    @Log(title = "考勤统计", businessType = BusinessType.EXPORT)
+    @Log(title = "月度考勤统计", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, AttendStatistics attendStatistics)
     {
         List<AttendStatistics> list = attendStatisticsService.selectAttendStatisticsList(attendStatistics);
         ExcelUtil<AttendStatistics> util = new ExcelUtil<AttendStatistics>(AttendStatistics.class);
-        util.exportExcel(response, list, "考勤统计数据");
+        util.exportExcel(response, list, "月度考勤统计数据");
     }
 
     /**
-     * 获取考勤统计详细信息
+     * 获取月度考勤统计详细信息
      */
     @PreAuthorize("@ss.hasPermi('attendance:statistics:query')")
     @GetMapping(value = "/{statisticsId}")
@@ -70,10 +70,10 @@ public class AttendStatisticsController extends BaseController
     }
 
     /**
-     * 新增考勤统计
+     * 新增月度考勤统计
      */
     @PreAuthorize("@ss.hasPermi('attendance:statistics:add')")
-    @Log(title = "考勤统计", businessType = BusinessType.INSERT)
+    @Log(title = "月度考勤统计", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody AttendStatistics attendStatistics)
     {
@@ -81,10 +81,10 @@ public class AttendStatisticsController extends BaseController
     }
 
     /**
-     * 修改考勤统计
+     * 修改月度考勤统计
      */
     @PreAuthorize("@ss.hasPermi('attendance:statistics:edit')")
-    @Log(title = "考勤统计", businessType = BusinessType.UPDATE)
+    @Log(title = "月度考勤统计", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody AttendStatistics attendStatistics)
     {
@@ -92,10 +92,10 @@ public class AttendStatisticsController extends BaseController
     }
 
     /**
-     * 删除考勤统计
+     * 删除月度考勤统计
      */
     @PreAuthorize("@ss.hasPermi('attendance:statistics:remove')")
-    @Log(title = "考勤统计", businessType = BusinessType.DELETE)
+    @Log(title = "月度考勤统计", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{statisticsIds}")
     public AjaxResult remove(@PathVariable Long[] statisticsIds)
     {

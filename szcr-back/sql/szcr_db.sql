@@ -100,20 +100,26 @@ create table sys_role_menu (
 -- ----------------------------
 drop table if exists attend_record;
 create table attend_record (
-  record_id         bigint(20)     not null                    comment '记录ID',
-  user_id           bigint(20)     not null                    comment '用户ID',
-  attend_date       date           not null                    comment '考勤日期',
-  attend_year       int                                        comment '年份',
-  attend_month      int                                        comment '月份',
-  status            char(1)                                    comment '考勤状态（0正常 1停用）',
-  on_time           datetime                                   comment '上班时间',
-  off_time          datetime                                   comment '下班时间',
-  create_by         varchar(64)     default ''                 comment '创建者',
-  create_time       datetime                                   comment '创建时间',
-  update_by         varchar(64)     default ''                 comment '更新者',
-  update_time       datetime                                   comment '更新时间',
-  remark            varchar(500)    default null               comment '备注',
-  primary key (record_id)
+                               record_id         bigint(20)    not null auto_increment      comment '记录ID',
+                               user_id           bigint(20)    not null                     comment '用户ID',
+                               user_name         varchar(30)                                comment '用户名',
+                               attend_date       date          not null                     comment '考勤日期',
+                               weekday_num       int                                        comment '星期几',
+                               is_workday        char(1)                                    comment '是否工作日',
+                               attend_year       int                                        comment '年份',
+                               attend_month      int                                        comment '月份',
+                               attend_hour       double                                     comment '考勤时长',
+                               schedule_sort     int            default 0                   comment '排班序号',
+                               on_time           datetime                                   comment '上班时间',
+                               on_status         char(1)                                    comment '上班状态',
+                               off_time          datetime                                   comment '下班时间',
+                               off_status        char(1)                                    comment '下班状态',
+                               create_by         varchar(64)     default ''                 comment '创建者',
+                               create_time       datetime                                   comment '创建时间',
+                               update_by         varchar(64)     default ''                 comment '更新者',
+                               update_time       datetime                                   comment '更新时间',
+                               remark            varchar(500)    default '无'               comment '备注',
+                               primary key (record_id)
 ) engine=innodb auto_increment=1 comment = '考勤记录表';
 
 
@@ -179,19 +185,64 @@ create table attend_schedule (
 -- ----------------------------
 -- 9、考勤统计表
 -- ----------------------------
+drop table if exists attend_record;
+create table attend_record (
+                               record_id         bigint(20)    not null auto_increment      comment '记录ID',
+                               user_id           bigint(20)    not null                     comment '用户ID',
+                               user_name         varchar(30)                                comment '用户名',
+                               attend_date       date          not null                     comment '考勤日期',
+                               weekday_num       int                                        comment '星期几',
+                               is_workday        char(1)                                    comment '是否工作日',
+                               attend_month      varchar(30)   not null                     comment '考勤月份',
+                               attend_hour       double                                     comment '考勤时长',
+                               schedule_sort     int           default 0                    comment '排班序号',
+                               on_time           datetime                                   comment '上班时间',
+                               on_status         char(1)                                    comment '上班状态',
+                               off_time          datetime                                   comment '下班时间',
+                               off_status        char(1)                                    comment '下班状态',
+                               create_by         varchar(64)   default ''                   comment '创建者',
+                               create_time       datetime                                   comment '创建时间',
+                               update_by         varchar(64)   default ''                   comment '更新者',
+                               update_time       datetime                                   comment '更新时间',
+                               remark            varchar(500)  default '无'                 comment '备注',
+                               primary key (record_id)
+) engine=innodb auto_increment=1 comment = '考勤记录表';
+
+
+
+drop table if exists attend_special;
+create table attend_special (
+                                special_id        bigint(20)    not null auto_increment      comment '异常考勤ID',
+                                user_id           bigint(20)    not null                     comment '用户ID',
+                                user_name         varchar(30)   not null                     comment '用户名',
+                                attend_type       char(1)                                    comment '考勤类型',
+                                start_time        datetime                                   comment '开始时间',
+                                end_time          datetime                                   comment '结束时间',
+                                attend_hour       double                                     comment '时长',
+                                create_by         varchar(64)     default ''                 comment '创建者',
+                                create_time       datetime                                   comment '创建时间',
+                                update_by         varchar(64)     default ''                 comment '更新者',
+                                update_time       datetime                                   comment '更新时间',
+                                remark            varchar(500)    default '无'               comment '备注',
+                                primary key (special_id)
+) engine=innodb auto_increment=1 comment = '异常考勤';
+
+
 drop table if exists attend_statistics;
 create table attend_statistics (
-  statistics_id     bigint(20)      not null auto_increment    comment '统计编号',
-  user_id           bigint(20)      not null                   comment '用户ID',
-  year              int             not null                   comment '年份',
-  month             int             not null                   comment '月份',
-  should_days       int             default 0                  comment '应到天数',
-  normal_days       int             default 0                  comment '实到天数',
-  late_days         int             default 0                  comment '迟到天数',
-  early_days        int             default 0                  comment '早退天数',
-  absence_days      int             default 0                  comment '缺勤天数',
-  outside_days      int             default 0                  comment '外勤天数',
-  over_time_days    int             default 0                  comment '加班天数',
-  remark            varchar(500)    default null               comment  '备注',
-  primary key (statistics_id)
-) engine=innodb auto_increment=1 comment = '考勤统计表';
+                                   statistics_id     bigint(20)      not null auto_increment    comment '统计编号',
+                                   attend_month      varchar(30)     not null                   comment '考勤月份',
+                                   user_id           bigint(20)      not null                   comment '用户编号',
+                                   user_name         varchar(30)                                comment '用户名',
+                                   rule_id           bigint(20)                                 comment '规则编号',
+                                   rule_name         varchar(30)                                comment '规则名称',
+                                   attend_days       double          default 0                  comment '实到天数',
+                                   normal_days       double          default 0                  comment '正常天数',
+                                   outside_days      double          default 0                  comment '外勤天数',
+                                   absence_days      double          default 0                  comment '缺勤天数',
+                                   leave_days        double          default 0                  comment '请假天数',
+                                   late_times        int             default 0                  comment '迟到次数',
+                                   early_times       int             default 0                  comment '早退次数',
+                                   over_hours        double          default 0                  comment '加班时长',
+                                   primary key (statistics_id)
+) engine=innodb auto_increment=1 comment = '月度考勤统计';

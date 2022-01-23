@@ -3,16 +3,21 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.attendance.mapper.AttendRecordMapper">
-
+    
     <resultMap type="AttendRecord" id="AttendRecordResult">
         <result property="recordId"    column="record_id"    />
         <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
         <result property="attendDate"    column="attend_date"    />
-        <result property="attendYear"    column="attend_year"    />
+        <result property="weekdayNum"    column="weekday_num"    />
+        <result property="isWorkday"    column="is_workday"    />
         <result property="attendMonth"    column="attend_month"    />
-        <result property="status"    column="status"    />
+        <result property="attendHour"    column="attend_hour"    />
+        <result property="scheduleSort"    column="schedule_sort"    />
         <result property="onTime"    column="on_time"    />
+        <result property="onStatus"    column="on_status"    />
         <result property="offTime"    column="off_time"    />
+        <result property="offStatus"    column="off_status"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -21,40 +26,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectAttendRecordVo">
-        select record_id, user_id, attend_date, attend_year, attend_month, status, on_time, off_time, create_by, create_time, update_by, update_time, remark from attend_record
+        select record_id, user_id, user_name, attend_date, weekday_num, is_workday, attend_month, attend_hour, schedule_sort, on_time, on_status, off_time, off_status, create_by, create_time, update_by, update_time, remark from attend_record
     </sql>
 
     <select id="selectAttendRecordList" parameterType="AttendRecord" resultMap="AttendRecordResult">
         <include refid="selectAttendRecordVo"/>
-        <where>
-            <if test="recordId != null "> and record_id = #{recordId}</if>
-            <if test="userId != null "> and user_id = #{userId}</if>
+        <where>  
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
             <if test="attendDate != null "> and attend_date = #{attendDate}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="attendMonth != null  and attendMonth != ''"> and attend_month = #{attendMonth}</if>
+            <if test="onStatus != null  and onStatus != ''"> and on_status = #{onStatus}</if>
+            <if test="offStatus != null  and offStatus != ''"> and off_status = #{offStatus}</if>
         </where>
     </select>
-
+    
     <select id="selectAttendRecordByRecordId" parameterType="Long" resultMap="AttendRecordResult">
         <include refid="selectAttendRecordVo"/>
         where record_id = #{recordId}
     </select>
-
-    <select id="selectByUserIdAndDate" resultMap="AttendRecordResult">
-        <include refid="selectAttendRecordVo"/>
-        where user_id = #{userId} AND attend_date = #{date}
-    </select>
-
-    <insert id="insertAttendRecord" parameterType="AttendRecord">
+        
+    <insert id="insertAttendRecord" parameterType="AttendRecord" useGeneratedKeys="true" keyProperty="recordId">
         insert into attend_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="recordId != null">record_id,</if>
             <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
             <if test="attendDate != null">attend_date,</if>
-            <if test="attendYear != null">attend_year,</if>
-            <if test="attendMonth != null">attend_month,</if>
-            <if test="status != null">status,</if>
+            <if test="weekdayNum != null">weekday_num,</if>
+            <if test="isWorkday != null">is_workday,</if>
+            <if test="attendMonth != null and attendMonth != ''">attend_month,</if>
+            <if test="attendHour != null">attend_hour,</if>
+            <if test="scheduleSort != null">schedule_sort,</if>
             <if test="onTime != null">on_time,</if>
+            <if test="onStatus != null">on_status,</if>
             <if test="offTime != null">off_time,</if>
+            <if test="offStatus != null">off_status,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -62,14 +67,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="recordId != null">#{recordId},</if>
             <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
             <if test="attendDate != null">#{attendDate},</if>
-            <if test="attendYear != null">#{attendYear},</if>
-            <if test="attendMonth != null">#{attendMonth},</if>
-            <if test="status != null">#{status},</if>
+            <if test="weekdayNum != null">#{weekdayNum},</if>
+            <if test="isWorkday != null">#{isWorkday},</if>
+            <if test="attendMonth != null and attendMonth != ''">#{attendMonth},</if>
+            <if test="attendHour != null">#{attendHour},</if>
+            <if test="scheduleSort != null">#{scheduleSort},</if>
             <if test="onTime != null">#{onTime},</if>
+            <if test="onStatus != null">#{onStatus},</if>
             <if test="offTime != null">#{offTime},</if>
+            <if test="offStatus != null">#{offStatus},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
@@ -82,12 +91,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update attend_record
         <trim prefix="SET" suffixOverrides=",">
             <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
             <if test="attendDate != null">attend_date = #{attendDate},</if>
-            <if test="attendYear != null">attend_year = #{attendYear},</if>
-            <if test="attendMonth != null">attend_month = #{attendMonth},</if>
-            <if test="status != null">status = #{status},</if>
+            <if test="weekdayNum != null">weekday_num = #{weekdayNum},</if>
+            <if test="isWorkday != null">is_workday = #{isWorkday},</if>
+            <if test="attendMonth != null and attendMonth != ''">attend_month = #{attendMonth},</if>
+            <if test="attendHour != null">attend_hour = #{attendHour},</if>
+            <if test="scheduleSort != null">schedule_sort = #{scheduleSort},</if>
             <if test="onTime != null">on_time = #{onTime},</if>
+            <if test="onStatus != null">on_status = #{onStatus},</if>
             <if test="offTime != null">off_time = #{offTime},</if>
+            <if test="offStatus != null">off_status = #{offStatus},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
@@ -102,7 +116,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteAttendRecordByRecordIds" parameterType="String">
-        delete from attend_record where record_id in
+        delete from attend_record where record_id in 
         <foreach item="recordId" collection="array" open="(" separator="," close=")">
             #{recordId}
         </foreach>

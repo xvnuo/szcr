@@ -6,27 +6,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="AttendStatistics" id="AttendStatisticsResult">
         <result property="statisticsId"    column="statistics_id"    />
-        <result property="userId"    column="user_id"    />
-        <result property="ruleId"    column="rule_id"    />
-        <result property="attendYear"    column="attend_year"    />
         <result property="attendMonth"    column="attend_month"    />
-        <result property="shouldDays"    column="should_days"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="ruleId"    column="rule_id"    />
+        <result property="ruleName"    column="rule_name"    />
         <result property="attendDays"    column="attend_days"    />
+        <result property="normalDays"    column="normal_days"    />
+        <result property="outsideDays"    column="outside_days"    />
+        <result property="absenceDays"    column="absence_days"    />
+        <result property="leaveDays"    column="leave_days"    />
         <result property="lateTimes"    column="late_times"    />
         <result property="earlyTimes"    column="early_times"    />
-        <result property="absentDays"    column="absent_days"    />
+        <result property="overHours"    column="over_hours"    />
     </resultMap>
 
     <sql id="selectAttendStatisticsVo">
-        select statistics_id, user_id, rule_id, attend_year, attend_month, should_days, attend_days, late_times, early_times, absent_days from attend_statistics
+        select statistics_id, attend_month, user_id, user_name, rule_id, rule_name, attend_days, normal_days, outside_days, absence_days, leave_days, late_times, early_times, over_hours from attend_statistics
     </sql>
 
     <select id="selectAttendStatisticsList" parameterType="AttendStatistics" resultMap="AttendStatisticsResult">
         <include refid="selectAttendStatisticsVo"/>
         <where>  
-            <if test="userId != null "> and user_id = #{userId}</if>
-            <if test="attendYear != null "> and attend_year = #{attendYear}</if>
-            <if test="attendMonth != null "> and attend_month = #{attendMonth}</if>
+            <if test="attendMonth != null  and attendMonth != ''"> and attend_month = #{attendMonth}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="ruleName != null  and ruleName != ''"> and rule_name like concat('%', #{ruleName}, '%')</if>
         </where>
     </select>
     
@@ -38,41 +42,53 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertAttendStatistics" parameterType="AttendStatistics" useGeneratedKeys="true" keyProperty="statisticsId">
         insert into attend_statistics
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="attendMonth != null and attendMonth != ''">attend_month,</if>
             <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
             <if test="ruleId != null">rule_id,</if>
-            <if test="attendYear != null">attend_year,</if>
-            <if test="attendMonth != null">attend_month,</if>
-            <if test="shouldDays != null">should_days,</if>
+            <if test="ruleName != null">rule_name,</if>
             <if test="attendDays != null">attend_days,</if>
+            <if test="normalDays != null">normal_days,</if>
+            <if test="outsideDays != null">outside_days,</if>
+            <if test="absenceDays != null">absence_days,</if>
+            <if test="leaveDays != null">leave_days,</if>
             <if test="lateTimes != null">late_times,</if>
             <if test="earlyTimes != null">early_times,</if>
-            <if test="absentDays != null">absent_days,</if>
+            <if test="overHours != null">over_hours,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="attendMonth != null and attendMonth != ''">#{attendMonth},</if>
             <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
             <if test="ruleId != null">#{ruleId},</if>
-            <if test="attendYear != null">#{attendYear},</if>
-            <if test="attendMonth != null">#{attendMonth},</if>
-            <if test="shouldDays != null">#{shouldDays},</if>
+            <if test="ruleName != null">#{ruleName},</if>
             <if test="attendDays != null">#{attendDays},</if>
+            <if test="normalDays != null">#{normalDays},</if>
+            <if test="outsideDays != null">#{outsideDays},</if>
+            <if test="absenceDays != null">#{absenceDays},</if>
+            <if test="leaveDays != null">#{leaveDays},</if>
             <if test="lateTimes != null">#{lateTimes},</if>
             <if test="earlyTimes != null">#{earlyTimes},</if>
-            <if test="absentDays != null">#{absentDays},</if>
+            <if test="overHours != null">#{overHours},</if>
          </trim>
     </insert>
 
     <update id="updateAttendStatistics" parameterType="AttendStatistics">
         update attend_statistics
         <trim prefix="SET" suffixOverrides=",">
+            <if test="attendMonth != null and attendMonth != ''">attend_month = #{attendMonth},</if>
             <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
             <if test="ruleId != null">rule_id = #{ruleId},</if>
-            <if test="attendYear != null">attend_year = #{attendYear},</if>
-            <if test="attendMonth != null">attend_month = #{attendMonth},</if>
-            <if test="shouldDays != null">should_days = #{shouldDays},</if>
+            <if test="ruleName != null">rule_name = #{ruleName},</if>
             <if test="attendDays != null">attend_days = #{attendDays},</if>
+            <if test="normalDays != null">normal_days = #{normalDays},</if>
+            <if test="outsideDays != null">outside_days = #{outsideDays},</if>
+            <if test="absenceDays != null">absence_days = #{absenceDays},</if>
+            <if test="leaveDays != null">leave_days = #{leaveDays},</if>
             <if test="lateTimes != null">late_times = #{lateTimes},</if>
             <if test="earlyTimes != null">early_times = #{earlyTimes},</if>
-            <if test="absentDays != null">absent_days = #{absentDays},</if>
+            <if test="overHours != null">over_hours = #{overHours},</if>
         </trim>
         where statistics_id = #{statisticsId}
     </update>

@@ -1,6 +1,5 @@
 package com.ruoyi.attendance.domain;
 
-import java.sql.Time;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -10,118 +9,184 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 考勤记录对象 attend_record
- *
+ * 
  * @author xvnuo
- * @date 2022-01-20
+ * @date 2022-01-23
  */
 public class AttendRecord extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 记录ID */
-    @Excel(name = "记录ID")
     private Long recordId;
 
     /** 用户ID */
     @Excel(name = "用户ID")
     private Long userId;
 
+    /** 用户名 */
+    @Excel(name = "用户名")
+    private String userName;
+
     /** 考勤日期 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "考勤日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date attendDate;
 
-    /** 年份 */
-    private Integer attendYear;
+    /** 星期几 */
+    @Excel(name = "星期几")
+    private Integer weekdayNum;
 
-    /** 月份 */
-    private Integer attendMonth;
+    /** 是否工作日 */
+    @Excel(name = "是否工作日")
+    private String isWorkday;
 
-    /** 考勤状态（0正常 1停用） */
-    @Excel(name = "考勤状态", readConverterExp = "0=正常,1=停用")
-    private String status;
+    /** 考勤月份 */
+    @Excel(name = "考勤月份")
+    private String attendMonth;
+
+    /** 考勤时长 */
+    @Excel(name = "考勤时长")
+    private Double attendHour;
+
+    /** 排班序号 */
+    @Excel(name = "排班序号")
+    private Integer scheduleSort;
 
     /** 上班时间 */
-    @JsonFormat(pattern = "HH:mm:ss")
-    @Excel(name = "上班时间", width = 30, dateFormat = "HH:mm:ss")
-    private Time onTime;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "上班时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date onTime;
+
+    /** 上班状态 */
+    @Excel(name = "上班状态")
+    private String onStatus;
 
     /** 下班时间 */
-    @JsonFormat(pattern = "HH:mm:ss")
-    @Excel(name = "下班时间", width = 30, dateFormat = "HH:mm:ss")
-    private Time offTime;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "下班时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date offTime;
 
-    public void setRecordId(Long recordId)
+    /** 下班状态 */
+    @Excel(name = "下班状态")
+    private String offStatus;
+
+    public void setRecordId(Long recordId) 
     {
         this.recordId = recordId;
     }
 
-    public Long getRecordId()
+    public Long getRecordId() 
     {
         return recordId;
     }
-    public void setUserId(Long userId)
+    public void setUserId(Long userId) 
     {
         this.userId = userId;
     }
 
-    public Long getUserId()
+    public Long getUserId() 
     {
         return userId;
     }
-    public void setAttendDate(Date attendDate)
+    public void setUserName(String userName) 
+    {
+        this.userName = userName;
+    }
+
+    public String getUserName() 
+    {
+        return userName;
+    }
+    public void setAttendDate(Date attendDate) 
     {
         this.attendDate = attendDate;
     }
 
-    public Date getAttendDate()
+    public Date getAttendDate() 
     {
         return attendDate;
     }
-    public void setAttendYear(Integer attendYear)
+    public void setWeekdayNum(Integer weekdayNum) 
     {
-        this.attendYear = attendYear;
+        this.weekdayNum = weekdayNum;
     }
 
-    public Integer getAttendYear()
+    public Integer getWeekdayNum() 
     {
-        return attendYear;
+        return weekdayNum;
     }
-    public void setAttendMonth(Integer attendMonth)
+    public void setIsWorkday(String isWorkday) 
+    {
+        this.isWorkday = isWorkday;
+    }
+
+    public String getIsWorkday() 
+    {
+        return isWorkday;
+    }
+    public void setAttendMonth(String attendMonth) 
     {
         this.attendMonth = attendMonth;
     }
 
-    public Integer getAttendMonth()
+    public String getAttendMonth() 
     {
         return attendMonth;
     }
-    public void setStatus(String status)
+    public void setAttendHour(Double attendHour) 
     {
-        this.status = status;
+        this.attendHour = attendHour;
     }
 
-    public String getStatus()
+    public Double getAttendHour() 
     {
-        return status;
+        return attendHour;
     }
-    public void setOnTime(Time onTime)
+    public void setScheduleSort(Integer scheduleSort) 
+    {
+        this.scheduleSort = scheduleSort;
+    }
+
+    public Integer getScheduleSort() 
+    {
+        return scheduleSort;
+    }
+    public void setOnTime(Date onTime) 
     {
         this.onTime = onTime;
     }
 
-    public Date getOnTime()
+    public Date getOnTime() 
     {
         return onTime;
     }
-    public void setOffTime(Time offTime)
+    public void setOnStatus(String onStatus) 
+    {
+        this.onStatus = onStatus;
+    }
+
+    public String getOnStatus() 
+    {
+        return onStatus;
+    }
+    public void setOffTime(Date offTime) 
     {
         this.offTime = offTime;
     }
 
-    public Date getOffTime()
+    public Date getOffTime() 
     {
         return offTime;
+    }
+    public void setOffStatus(String offStatus) 
+    {
+        this.offStatus = offStatus;
+    }
+
+    public String getOffStatus() 
+    {
+        return offStatus;
     }
 
     @Override
@@ -129,12 +194,17 @@ public class AttendRecord extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("recordId", getRecordId())
             .append("userId", getUserId())
+            .append("userName", getUserName())
             .append("attendDate", getAttendDate())
-            .append("attendYear", getAttendYear())
+            .append("weekdayNum", getWeekdayNum())
+            .append("isWorkday", getIsWorkday())
             .append("attendMonth", getAttendMonth())
-            .append("status", getStatus())
+            .append("attendHour", getAttendHour())
+            .append("scheduleSort", getScheduleSort())
             .append("onTime", getOnTime())
+            .append("onStatus", getOnStatus())
             .append("offTime", getOffTime())
+            .append("offStatus", getOffStatus())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

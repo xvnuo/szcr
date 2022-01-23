@@ -8,10 +8,10 @@ import com.ruoyi.attendance.domain.AttendStatistics;
 import com.ruoyi.attendance.service.IAttendStatisticsService;
 
 /**
- * 考勤统计Service业务层处理
+ * 月度考勤统计Service业务层处理
  * 
  * @author xvnuo
- * @date 2022-01-21
+ * @date 2022-01-23
  */
 @Service
 public class AttendStatisticsServiceImpl implements IAttendStatisticsService 
@@ -20,10 +20,10 @@ public class AttendStatisticsServiceImpl implements IAttendStatisticsService
     private AttendStatisticsMapper attendStatisticsMapper;
 
     /**
-     * 查询考勤统计
+     * 查询月度考勤统计
      * 
-     * @param statisticsId 考勤统计主键
-     * @return 考勤统计
+     * @param statisticsId 月度考勤统计主键
+     * @return 月度考勤统计
      */
     @Override
     public AttendStatistics selectAttendStatisticsByStatisticsId(Long statisticsId)
@@ -32,10 +32,10 @@ public class AttendStatisticsServiceImpl implements IAttendStatisticsService
     }
 
     /**
-     * 查询考勤统计列表
+     * 查询月度考勤统计列表
      * 
-     * @param attendStatistics 考勤统计
-     * @return 考勤统计
+     * @param attendStatistics 月度考勤统计
+     * @return 月度考勤统计
      */
     @Override
     public List<AttendStatistics> selectAttendStatisticsList(AttendStatistics attendStatistics)
@@ -44,9 +44,9 @@ public class AttendStatisticsServiceImpl implements IAttendStatisticsService
     }
 
     /**
-     * 新增考勤统计
+     * 新增月度考勤统计
      * 
-     * @param attendStatistics 考勤统计
+     * @param attendStatistics 月度考勤统计
      * @return 结果
      */
     @Override
@@ -56,9 +56,9 @@ public class AttendStatisticsServiceImpl implements IAttendStatisticsService
     }
 
     /**
-     * 修改考勤统计
+     * 修改月度考勤统计
      * 
-     * @param attendStatistics 考勤统计
+     * @param attendStatistics 月度考勤统计
      * @return 结果
      */
     @Override
@@ -68,9 +68,9 @@ public class AttendStatisticsServiceImpl implements IAttendStatisticsService
     }
 
     /**
-     * 批量删除考勤统计
+     * 批量删除月度考勤统计
      * 
-     * @param statisticsIds 需要删除的考勤统计主键
+     * @param statisticsIds 需要删除的月度考勤统计主键
      * @return 结果
      */
     @Override
@@ -80,9 +80,9 @@ public class AttendStatisticsServiceImpl implements IAttendStatisticsService
     }
 
     /**
-     * 删除考勤统计信息
+     * 删除月度考勤统计信息
      * 
-     * @param statisticsId 考勤统计主键
+     * @param statisticsId 月度考勤统计主键
      * @return 结果
      */
     @Override

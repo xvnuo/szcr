@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询考勤统计列表
+// 查询月度考勤统计列表
 export function listStatistics(query) {
   return request({
     url: '/attendance/statistics/list',
@@ -9,7 +9,7 @@ export function listStatistics(query) {
   })
 }
 
-// 查询考勤统计详细
+// 查询月度考勤统计详细
 export function getStatistics(statisticsId) {
   return request({
     url: '/attendance/statistics/' + statisticsId,
@@ -17,7 +17,7 @@ export function getStatistics(statisticsId) {
   })
 }
 
-// 新增考勤统计
+// 新增月度考勤统计
 export function addStatistics(data) {
   return request({
     url: '/attendance/statistics',
@@ -26,7 +26,7 @@ export function addStatistics(data) {
   })
 }
 
-// 修改考勤统计
+// 修改月度考勤统计
 export function updateStatistics(data) {
   return request({
     url: '/attendance/statistics',
@@ -35,7 +35,7 @@ export function updateStatistics(data) {
   })
 }
 
-// 删除考勤统计
+// 删除月度考勤统计
 export function delStatistics(statisticsId) {
   return request({
     url: '/attendance/statistics/' + statisticsId,
@@ -43,7 +43,7 @@ export function delStatistics(statisticsId) {
   })
 }
 
-// 导出考勤统计
+// 导出月度考勤统计
 export function exportStatistics(query) {
   return request({
     url: '/attendance/statistics/export',

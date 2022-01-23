@@ -25,7 +25,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 考勤记录Controller
  * 
  * @author xvnuo
- * @date 2022-01-20
+ * @date 2022-01-23
  */
 @RestController
 @RequestMapping("/attendance/record")
