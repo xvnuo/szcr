@@ -11,9 +11,9 @@
         />
       </el-form-item>
       <el-form-item label="考勤类型" prop="attendType">
-        <el-select v-model="queryParams.attendType" placeholder="请选择考勤类型" clearable size="small">
+        <el-select v-model="queryParams.attendType" placeholder="请选择异常考勤类型" clearable size="small">
           <el-option
-            v-for="dict in dict.type.attend_record_status"
+            v-for="dict in dict.type.attend_special_type"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -90,12 +90,11 @@
 
     <el-table v-loading="loading" :data="specialList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="异常考勤ID" align="center" prop="specialId" />
       <el-table-column label="用户ID" align="center" prop="userId" />
       <el-table-column label="用户名" align="center" prop="userName" />
       <el-table-column label="考勤类型" align="center" prop="attendType">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.attend_record_status" :value="scope.row.attendType"/>
+          <dict-tag :options="dict.type.attend_special_type" :value="scope.row.attendType"/>
         </template>
       </el-table-column>
       <el-table-column label="开始时间" align="center" prop="startTime" width="180">
@@ -129,7 +128,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -150,7 +149,7 @@
         <el-form-item label="考勤类型" prop="attendType">
           <el-select v-model="form.attendType" placeholder="请选择考勤类型">
             <el-option
-              v-for="dict in dict.type.attend_record_status"
+              v-for="dict in dict.type.attend_special_type"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
@@ -190,7 +189,7 @@ import { listSpecial, getSpecial, delSpecial, addSpecial, updateSpecial } from "
 
 export default {
   name: "Special",
-  dicts: ['attend_record_status'],
+  dicts: ['attend_special_type'],
   data() {
     return {
       // 遮罩层

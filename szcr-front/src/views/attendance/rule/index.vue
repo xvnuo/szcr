@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="名称" prop="ruleName">
+      <el-form-item label="规则名称" prop="ruleName">
         <el-input
           v-model="queryParams.ruleName"
           placeholder="请输入名称"
@@ -10,8 +10,8 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="考勤类型" prop="ruleType">
-        <el-select v-model="queryParams.ruleType" placeholder="请选择考勤类型" clearable size="small">
+      <el-form-item label="规则类型" prop="ruleType">
+        <el-select v-model="queryParams.ruleType" placeholder="请选择考勤规则类型" clearable size="small">
           <el-option
             v-for="dict in dict.type.attend_rule_type"
             :key="dict.value"
@@ -19,20 +19,6 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="上班时间" prop="onTime">
-        <el-time-picker clearable
-                        v-model="queryParams.onTime" format="HH:mm:ss" value-format="HH:mm:ss"
-                        :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
-                        placeholder="请选择上班时间">
-        </el-time-picker>
-      </el-form-item>
-      <el-form-item label="下班时间" prop="offTime">
-        <el-time-picker clearable
-                        v-model="queryParams.offTime" format="HH:mm:ss" value-format="HH:mm:ss"
-                        :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
-                        placeholder="请选择下班时间">
-        </el-time-picker>
       </el-form-item>
       <el-form-item label="每日工时" prop="workHour">
         <el-input

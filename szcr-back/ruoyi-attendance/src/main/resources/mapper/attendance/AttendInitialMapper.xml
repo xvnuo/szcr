@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.attendance.mapper.AttendInitialMapper">
-    
+
     <resultMap type="AttendInitial" id="AttendInitialResult">
         <result property="initialId"    column="initial_id"    />
         <result property="userId"    column="user_id"    />
@@ -12,25 +12,48 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="initialPlace"    column="initial_place"    />
     </resultMap>
 
+    <resultMap type="AttendRecord" id="AttendRecordResult">
+        <result property="recordId"    column="record_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="ruleId"    column="rule_id"    />
+        <result property="ruleName"    column="rule_name"    />
+        <result property="attendDate"    column="attend_date"    />
+        <result property="weekdayNum"    column="weekday_num"    />
+        <result property="isWorkday"    column="is_workday"    />
+        <result property="attendMonth"    column="attend_month"    />
+        <result property="attendHour"    column="attend_hour"    />
+        <result property="scheduleSort"    column="schedule_sort"    />
+        <result property="onTime"    column="on_time"    />
+        <result property="onStatus"    column="on_status"    />
+        <result property="offTime"    column="off_time"    />
+        <result property="offStatus"    column="off_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
     <sql id="selectAttendInitialVo">
         select initial_id, user_id, user_name, initial_time, initial_place from attend_initial
     </sql>
 
     <select id="selectAttendInitialList" parameterType="AttendInitial" resultMap="AttendInitialResult">
         <include refid="selectAttendInitialVo"/>
-        <where>  
+        <where>
             <if test="userId != null "> and user_id = #{userId}</if>
             <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
             <if test="initialTime != null "> and initial_time = #{initialTime}</if>
             <if test="initialPlace != null  and initialPlace != ''"> and initial_place like concat('%', #{initialPlace}, '%')</if>
         </where>
     </select>
-    
+
     <select id="selectAttendInitialByInitialId" parameterType="Long" resultMap="AttendInitialResult">
         <include refid="selectAttendInitialVo"/>
         where initial_id = #{initialId}
     </select>
-        
+
     <insert id="insertAttendInitial" parameterType="AttendInitial" useGeneratedKeys="true" keyProperty="initialId">
         insert into attend_initial
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -63,9 +86,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteAttendInitialByInitialIds" parameterType="String">
-        delete from attend_initial where initial_id in 
+        delete from attend_initial where initial_id in
         <foreach item="initialId" collection="array" open="(" separator="," close=")">
             #{initialId}
         </foreach>
     </delete>
+
+    <!--将原始的考勤记录按日期整理成标准形式 -->
+    <select id="selectAttendRecordList" parameterType="AttendRecord" resultMap="AttendRecordResult">
+        select i.user_id,
+               i.user_name,
+               r.rule_id,
+               r.rule_name,
+               substr(i.initial_time, 1, 10) as attend_date,
+               dayofweek(i.initial_time)-1 as weekday_num,
+               substr(i.initial_time, 1, 7) as attend_month,
+               min(i.initial_time) as on_time,
+               max(i.initial_time) as off_time
+        from attend_initial i
+             left join sys_user u on i.user_id = u.user_id
+             left join attend_rule r on u.rule_id = r.rule_id
+        <where>
+            <if test="userName != null  and userName != ''">i.user_name like concat('%', #{userName}, '%')</if>
+            <if test="attendMonth != null  and attendMonth != ''"> and i.attend_month = #{attendMonth}</if>
+            <if test="attendDate != null  and attendDate != ''"> and i.attend_date = #{attendDate}</if>
+        </where>
+        group by i.user_id, substr(i.initial_time, 1, 10)
+        order by i.user_id, substr(i.initial_time, 1, 10) ASC
+    </select>
+
 </mapper>

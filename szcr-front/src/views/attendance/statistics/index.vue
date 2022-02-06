@@ -83,7 +83,6 @@
 
     <el-table v-loading="loading" :data="statisticsList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="统计编号" align="center" prop="statisticsId" />
       <el-table-column label="考勤月份" align="center" prop="attendMonth">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.attend_year_month" :value="scope.row.attendMonth"/>

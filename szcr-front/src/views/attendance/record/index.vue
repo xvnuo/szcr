@@ -10,14 +10,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="考勤日期" prop="attendDate">
-        <el-date-picker clearable size="small"
-          v-model="queryParams.attendDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择考勤日期">
-        </el-date-picker>
-      </el-form-item>
       <el-form-item label="考勤月份" prop="attendMonth">
         <el-select v-model="queryParams.attendMonth" placeholder="请选择考勤月份" clearable size="small">
           <el-option
@@ -27,6 +19,14 @@
             :value="dict.value"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="考勤日期" prop="attendDate">
+        <el-date-picker clearable size="small"
+          v-model="queryParams.attendDate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="选择考勤日期">
+        </el-date-picker>
       </el-form-item>
       <el-form-item label="上班状态" prop="onStatus">
         <el-select v-model="queryParams.onStatus" placeholder="请选择上班状态" clearable size="small">
@@ -102,14 +102,7 @@
 
     <el-table v-loading="loading" :data="recordList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="记录ID" align="center" prop="recordId" />
-      <el-table-column label="用户ID" align="center" prop="userId" />
-      <el-table-column label="用户名" align="center" prop="userName" />
-      <el-table-column label="考勤日期" align="center" prop="attendDate" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.attendDate, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
+      <!-- el-table-column label="记录ID" align="center" prop="recordId" />
       <el-table-column label="星期几" align="center" prop="weekdayNum">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.attend_work_day" :value="scope.row.weekdayNum"/>
@@ -124,11 +117,16 @@
         <template slot-scope="scope">
           <dict-tag :options="dict.type.attend_year_month" :value="scope.row.attendMonth"/>
         </template>
+      </el-table-column -->
+      <el-table-column label="用户ID" align="center" prop="userId" />
+      <el-table-column label="用户名" align="center" prop="userName" />
+      <el-table-column label="考勤日期" align="center" prop="attendDate" width="150">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.attendDate, '{y}-{m}-{d}') }}</span>
+        </template>
       </el-table-column>
-      <el-table-column label="考勤时长" align="center" prop="attendHour" />
-      <el-table-column label="排班序号" align="center" prop="scheduleSort" />
+      <el-table-column label="排班序号" align="center" prop="scheduleSort" width="80"/>
       <el-table-column label="上班时间" align="center" prop="onTime" />
-
       <el-table-column label="上班状态" align="center" prop="onStatus">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.attend_record_status" :value="scope.row.onStatus"/>
@@ -140,6 +138,7 @@
           <dict-tag :options="dict.type.attend_record_status" :value="scope.row.offStatus"/>
         </template>
       </el-table-column>
+      <el-table-column label="考勤时长" align="center" prop="attendHour" width="80"/>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">

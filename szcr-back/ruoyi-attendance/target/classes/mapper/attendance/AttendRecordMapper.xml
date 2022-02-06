@@ -130,7 +130,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
         </trim>
-        where record_id = #{recordId}
+        <where>
+            <if test="recordId != null  and recordId != ''"> record_id = #{recordId}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="attendDate != null"> and attend_date = #{attendDate}</if>
+        </where>
     </update>
 
     <delete id="deleteAttendRecordByRecordId" parameterType="Long">
