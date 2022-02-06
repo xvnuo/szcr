@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.attendance.mapper.AttendInitialMapper">
+    
+    <resultMap type="AttendInitial" id="AttendInitialResult">
+        <result property="initialId"    column="initial_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="initialTime"    column="initial_time"    />
+        <result property="initialPlace"    column="initial_place"    />
+    </resultMap>
+
+    <sql id="selectAttendInitialVo">
+        select initial_id, user_id, user_name, initial_time, initial_place from attend_initial
+    </sql>
+
+    <select id="selectAttendInitialList" parameterType="AttendInitial" resultMap="AttendInitialResult">
+        <include refid="selectAttendInitialVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="initialTime != null "> and initial_time = #{initialTime}</if>
+            <if test="initialPlace != null  and initialPlace != ''"> and initial_place like concat('%', #{initialPlace}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectAttendInitialByInitialId" parameterType="Long" resultMap="AttendInitialResult">
+        <include refid="selectAttendInitialVo"/>
+        where initial_id = #{initialId}
+    </select>
+        
+    <insert id="insertAttendInitial" parameterType="AttendInitial" useGeneratedKeys="true" keyProperty="initialId">
+        insert into attend_initial
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="initialTime != null">initial_time,</if>
+            <if test="initialPlace != null">initial_place,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="initialTime != null">#{initialTime},</if>
+            <if test="initialPlace != null">#{initialPlace},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAttendInitial" parameterType="AttendInitial">
+        update attend_initial
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="initialTime != null">initial_time = #{initialTime},</if>
+            <if test="initialPlace != null">initial_place = #{initialPlace},</if>
+        </trim>
+        where initial_id = #{initialId}
+    </update>
+
+    <delete id="deleteAttendInitialByInitialId" parameterType="Long">
+        delete from attend_initial where initial_id = #{initialId}
+    </delete>
+
+    <delete id="deleteAttendInitialByInitialIds" parameterType="String">
+        delete from attend_initial where initial_id in 
+        <foreach item="initialId" collection="array" open="(" separator="," close=")">
+            #{initialId}
+        </foreach>
+    </delete>
+</mapper>
