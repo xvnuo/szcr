@@ -29,6 +29,13 @@ public class AttendRecord extends BaseEntity
     @Excel(name = "用户名")
     private String userName;
 
+    /** 规则编号 */
+    private Long ruleId;
+
+    /** 规则名称 */
+    @Excel(name = "规则名称")
+    private String ruleName;
+
     /** 考勤日期 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "考勤日期", width = 30, dateFormat = "yyyy-MM-dd")
@@ -98,6 +105,24 @@ public class AttendRecord extends BaseEntity
     public String getUserName()
     {
         return userName;
+    }
+    public void setRuleId(Long ruleId)
+    {
+        this.ruleId = ruleId;
+    }
+
+    public Long getRuleId()
+    {
+        return ruleId;
+    }
+    public void setRuleName(String ruleName)
+    {
+        this.ruleName = ruleName;
+    }
+
+    public String getRuleName()
+    {
+        return ruleName;
     }
     public void setAttendDate(Date attendDate)
     {

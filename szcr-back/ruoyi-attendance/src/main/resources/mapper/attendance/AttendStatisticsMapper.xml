@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.attendance.mapper.AttendStatisticsMapper">
-    
+
     <resultMap type="AttendStatistics" id="AttendStatisticsResult">
         <result property="statisticsId"    column="statistics_id"    />
         <result property="attendMonth"    column="attend_month"    />
@@ -27,18 +27,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectAttendStatisticsList" parameterType="AttendStatistics" resultMap="AttendStatisticsResult">
         <include refid="selectAttendStatisticsVo"/>
-        <where>  
+        <where>
             <if test="attendMonth != null  and attendMonth != ''"> and attend_month = #{attendMonth}</if>
             <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
             <if test="ruleName != null  and ruleName != ''"> and rule_name like concat('%', #{ruleName}, '%')</if>
         </where>
     </select>
-    
+
     <select id="selectAttendStatisticsByStatisticsId" parameterType="Long" resultMap="AttendStatisticsResult">
         <include refid="selectAttendStatisticsVo"/>
         where statistics_id = #{statisticsId}
     </select>
-        
+
     <insert id="insertAttendStatistics" parameterType="AttendStatistics" useGeneratedKeys="true" keyProperty="statisticsId">
         insert into attend_statistics
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -90,7 +90,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="earlyTimes != null">early_times = #{earlyTimes},</if>
             <if test="overHours != null">over_hours = #{overHours},</if>
         </trim>
-        where statistics_id = #{statisticsId}
+        <where>
+            <if test="statisticsId != null  and statisticsId != ''"> statistics_id = #{statisticsId}</if>
+            <if test="attendMonth != null  and attendMonth != ''"> and attend_month = #{attendMonth}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="ruleName != null  and ruleName != ''"> and rule_name like concat('%', #{ruleName}, '%')</if>
+        </where>
     </update>
 
     <delete id="deleteAttendStatisticsByStatisticsId" parameterType="Long">
@@ -98,7 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteAttendStatisticsByStatisticsIds" parameterType="String">
-        delete from attend_statistics where statistics_id in 
+        delete from attend_statistics where statistics_id in
         <foreach item="statisticsId" collection="array" open="(" separator="," close=")">
             #{statisticsId}
         </foreach>

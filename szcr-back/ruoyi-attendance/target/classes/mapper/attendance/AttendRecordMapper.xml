@@ -3,11 +3,13 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.attendance.mapper.AttendRecordMapper">
-    
+
     <resultMap type="AttendRecord" id="AttendRecordResult">
         <result property="recordId"    column="record_id"    />
         <result property="userId"    column="user_id"    />
         <result property="userName"    column="user_name"    />
+        <result property="ruleId"    column="rule_id"    />
+        <result property="ruleName"    column="rule_name"    />
         <result property="attendDate"    column="attend_date"    />
         <result property="weekdayNum"    column="weekday_num"    />
         <result property="isWorkday"    column="is_workday"    />
@@ -25,26 +27,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
     </resultMap>
 
+    <resultMap type="AttendStatistics" id="AttendStatisticsResult">
+        <result property="statisticsId"    column="statistics_id"    />
+        <result property="attendMonth"    column="attend_month"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="ruleId"    column="rule_id"    />
+        <result property="ruleName"    column="rule_name"    />
+        <result property="attendDays"    column="attend_days"    />
+        <result property="normalDays"    column="normal_days"    />
+        <result property="outsideDays"    column="outside_days"    />
+        <result property="absenceDays"    column="absence_days"    />
+        <result property="leaveDays"    column="leave_days"    />
+        <result property="lateTimes"    column="late_times"    />
+        <result property="earlyTimes"    column="early_times"    />
+        <result property="overHours"    column="over_hours"    />
+    </resultMap>
+
     <sql id="selectAttendRecordVo">
-        select record_id, user_id, user_name, attend_date, weekday_num, is_workday, attend_month, attend_hour, schedule_sort, on_time, on_status, off_time, off_status, create_by, create_time, update_by, update_time, remark from attend_record
+        select r1.record_id, r1.user_id, u.user_name, r1.rule_id, r2.rule_name, r1.attend_date, r1.weekday_num, r1.is_workday, r1.attend_month, r1.attend_hour, r1.schedule_sort, r1.on_time, r1.on_status, r1.off_time, r1.off_status, r1.create_by, r1.create_time, r1.update_by, r1.update_time, r1.remark
+        from attend_record r1
+             left join sys_user u on u.user_id = r1.user_id
+             left join attend_rule r2 on r1.rule_id = r2.rule_id
     </sql>
 
     <select id="selectAttendRecordList" parameterType="AttendRecord" resultMap="AttendRecordResult">
         <include refid="selectAttendRecordVo"/>
-        <where>  
-            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
-            <if test="attendDate != null "> and attend_date = #{attendDate}</if>
-            <if test="attendMonth != null  and attendMonth != ''"> and attend_month = #{attendMonth}</if>
-            <if test="onStatus != null  and onStatus != ''"> and on_status = #{onStatus}</if>
-            <if test="offStatus != null  and offStatus != ''"> and off_status = #{offStatus}</if>
+        <where>
+            <if test="userName != null  and userName != ''"> and r1.user_name like concat('%', #{userName}, '%')</if>
+            <if test="attendDate != null "> and r1.attend_date = #{attendDate}</if>
+            <if test="attendMonth != null  and attendMonth != ''"> and r1.attend_month = #{attendMonth}</if>
+            <if test="onStatus != null  and onStatus != ''"> and r1.on_status = #{onStatus}</if>
+            <if test="offStatus != null  and offStatus != ''"> and r1.off_status = #{offStatus}</if>
         </where>
     </select>
-    
+
     <select id="selectAttendRecordByRecordId" parameterType="Long" resultMap="AttendRecordResult">
         <include refid="selectAttendRecordVo"/>
-        where record_id = #{recordId}
+        where r1.record_id = #{recordId}
     </select>
-        
+
     <insert id="insertAttendRecord" parameterType="AttendRecord" useGeneratedKeys="true" keyProperty="recordId">
         insert into attend_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -116,9 +138,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteAttendRecordByRecordIds" parameterType="String">
-        delete from attend_record where record_id in 
+        delete from attend_record where record_id in
         <foreach item="recordId" collection="array" open="(" separator="," close=")">
             #{recordId}
         </foreach>
     </delete>
+
+    <select id="generateStatisticsList" parameterType="AttendStatistics" resultMap="AttendStatisticsResult">
+        select r1.attend_month as attend_month,
+               r1.user_id,
+               u.user_name,
+               r1.rule_id,
+               r2.rule_name
+        from attend_record r1
+             left join sys_user u on r1.user_id = u.user_id
+             left join attend_rule r2 on r1.rule_id = r2.rule_id
+        <where>
+            <if test="userName != null  and userName != ''">r1.user_name like concat('%', #{userName}, '%')</if>
+            <if test="attendMonth != null  and attendMonth != ''"> and r1.attend_month = #{attendMonth}</if>
+        </where>
+        group by r1.user_id, r1.attend_month
+    </select>
+
 </mapper>
