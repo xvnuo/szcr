@@ -12,7 +12,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 考勤记录对象 attend_record
  *
  * @author xvnuo
- * @date 2022-01-23
+ * @date 2022-02-09
  */
 public class AttendRecord extends BaseEntity
 {
@@ -29,55 +29,56 @@ public class AttendRecord extends BaseEntity
     @Excel(name = "用户名")
     private String userName;
 
-    /** 规则编号 */
-    private Long ruleId;
-
-    /** 规则名称 */
-    @Excel(name = "规则名称")
-    private String ruleName;
-
     /** 考勤日期 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "考勤日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date attendDate;
 
     /** 星期几 */
-    @Excel(name = "星期几")
-    private Integer weekdayNum;
+    private Long weekdayNum;
 
     /** 是否工作日 */
-    @Excel(name = "是否工作日")
     private String isWorkday;
 
     /** 考勤月份 */
-    @Excel(name = "考勤月份")
     private String attendMonth;
 
     /** 考勤时长 */
     @Excel(name = "考勤时长")
-    private Double attendHour;
+    private Long attendHour;
 
     /** 排班序号 */
     @Excel(name = "排班序号")
-    private Integer scheduleSort;
+    private Long scheduleSort;
 
     /** 上班时间 */
     @JsonFormat(pattern = "HH:mm:ss")
     @Excel(name = "上班时间", width = 30, dateFormat = "HH:mm:ss")
     private Time onTime;
 
+    /** 上班状态 */
+    @Excel(name = "上班状态")
+    private String onStatus;
+
     /** 下班时间 */
     @JsonFormat(pattern = "HH:mm:ss")
     @Excel(name = "下班时间", width = 30, dateFormat = "HH:mm:ss")
     private Time offTime;
 
-    /** 上班状态 */
-    @Excel(name = "上班状态")
-    private String onStatus;
-
     /** 下班状态 */
     @Excel(name = "下班状态")
     private String offStatus;
+
+    /** 规则ID */
+    private Long ruleId;
+
+    /** 规则名称 */
+    @Excel(name = "规则名称")
+    private String ruleName;
+
+    /** 出勤类型(出勤/缺勤/外勤/休假/请假) */
+    @Excel(name = "出勤类型(出勤/缺勤/外勤/休假/请假)")
+    private String attendType;
 
     public void setRecordId(Long recordId)
     {
@@ -106,24 +107,6 @@ public class AttendRecord extends BaseEntity
     {
         return userName;
     }
-    public void setRuleId(Long ruleId)
-    {
-        this.ruleId = ruleId;
-    }
-
-    public Long getRuleId()
-    {
-        return ruleId;
-    }
-    public void setRuleName(String ruleName)
-    {
-        this.ruleName = ruleName;
-    }
-
-    public String getRuleName()
-    {
-        return ruleName;
-    }
     public void setAttendDate(Date attendDate)
     {
         this.attendDate = attendDate;
@@ -133,12 +116,12 @@ public class AttendRecord extends BaseEntity
     {
         return attendDate;
     }
-    public void setWeekdayNum(Integer weekdayNum)
+    public void setWeekdayNum(Long weekdayNum)
     {
         this.weekdayNum = weekdayNum;
     }
 
-    public Integer getWeekdayNum()
+    public Long getWeekdayNum()
     {
         return weekdayNum;
     }
@@ -160,21 +143,21 @@ public class AttendRecord extends BaseEntity
     {
         return attendMonth;
     }
-    public void setAttendHour(Double attendHour)
+    public void setAttendHour(Long attendHour)
     {
         this.attendHour = attendHour;
     }
 
-    public Double getAttendHour()
+    public Long getAttendHour()
     {
         return attendHour;
     }
-    public void setScheduleSort(Integer scheduleSort)
+    public void setScheduleSort(Long scheduleSort)
     {
         this.scheduleSort = scheduleSort;
     }
 
-    public Integer getScheduleSort()
+    public Long getScheduleSort()
     {
         return scheduleSort;
     }
@@ -214,6 +197,33 @@ public class AttendRecord extends BaseEntity
     {
         return offStatus;
     }
+    public void setRuleId(Long ruleId)
+    {
+        this.ruleId = ruleId;
+    }
+
+    public Long getRuleId()
+    {
+        return ruleId;
+    }
+    public void setRuleName(String ruleName)
+    {
+        this.ruleName = ruleName;
+    }
+
+    public String getRuleName()
+    {
+        return ruleName;
+    }
+    public void setAttendType(String attendType)
+    {
+        this.attendType = attendType;
+    }
+
+    public String getAttendType()
+    {
+        return attendType;
+    }
 
     @Override
     public String toString() {
@@ -236,6 +246,9 @@ public class AttendRecord extends BaseEntity
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
+            .append("ruleId", getRuleId())
+            .append("ruleName", getRuleName())
+            .append("attendType", getAttendType())
             .toString();
     }
 }

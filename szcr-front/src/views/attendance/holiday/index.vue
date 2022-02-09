@@ -91,7 +91,6 @@
 
     <el-table v-loading="loading" :data="holidayList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="假日ID" align="center" prop="holidayId" />
       <el-table-column label="假日名称" align="center" prop="name" />
       <el-table-column label="开始时间" align="center" prop="beginTime" width="180">
         <template slot-scope="scope">

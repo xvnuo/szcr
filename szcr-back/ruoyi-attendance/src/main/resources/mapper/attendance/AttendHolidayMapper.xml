@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.attendance.mapper.AttendHolidayMapper">
-    
+
     <resultMap type="AttendHoliday" id="AttendHolidayResult">
         <result property="holidayId"    column="holiday_id"    />
         <result property="name"    column="name"    />
@@ -23,19 +23,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectAttendHolidayList" parameterType="AttendHoliday" resultMap="AttendHolidayResult">
         <include refid="selectAttendHolidayVo"/>
-        <where>  
+        <where>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="beginTime != null "> and begin_time = #{beginTime}</if>
             <if test="endTime != null "> and end_time = #{endTime}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
         </where>
     </select>
-    
+
     <select id="selectAttendHolidayByHolidayId" parameterType="Long" resultMap="AttendHolidayResult">
         <include refid="selectAttendHolidayVo"/>
         where holiday_id = #{holidayId}
     </select>
-        
+
     <insert id="insertAttendHoliday" parameterType="AttendHoliday" useGeneratedKeys="true" keyProperty="holidayId">
         insert into attend_holiday
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -83,9 +83,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteAttendHolidayByHolidayIds" parameterType="String">
-        delete from attend_holiday where holiday_id in 
+        delete from attend_holiday where holiday_id in
         <foreach item="holidayId" collection="array" open="(" separator="," close=")">
             #{holidayId}
         </foreach>
     </delete>
+
+    <update id="updateCalendar" parameterType="AttendHoliday">
+        update config_calendar
+        set rep_status = #{status}
+        where date_format(rep_date,'%y%m%d') &gt;= date_format(#{beginDate},'%y%m%d') AND
+              date_format(rep_date,'%y%m%d') &lt;= date_format(#{endDate},'%y%m%d')
+    </update>
+
 </mapper>

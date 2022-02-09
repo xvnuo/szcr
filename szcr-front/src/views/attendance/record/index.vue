@@ -10,26 +10,42 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="考勤月份" prop="attendMonth">
-        <el-select v-model="queryParams.attendMonth" placeholder="请选择考勤月份" clearable size="small">
+      <el-form-item label="考勤日期">
+        <el-date-picker
+          v-model="dateRange"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="出勤类型" prop="attendType">
+        <el-select
+          v-model="queryParams.attendType"
+          placeholder="请选择出勤类型"
+          clearable
+          size="small"
+          style="width: 240px"
+        >
           <el-option
-            v-for="dict in dict.type.attend_year_month"
+            v-for="dict in dict.type.attend_record_type"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="考勤日期" prop="attendDate">
-        <el-date-picker clearable size="small"
-          v-model="queryParams.attendDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择考勤日期">
-        </el-date-picker>
-      </el-form-item>
       <el-form-item label="上班状态" prop="onStatus">
-        <el-select v-model="queryParams.onStatus" placeholder="请选择上班状态" clearable size="small">
+        <el-select
+          v-model="queryParams.onStatus"
+          placeholder="请选择上班状态"
+          clearable
+          size="small"
+          style="width: 240px"
+        >
           <el-option
             v-for="dict in dict.type.attend_record_status"
             :key="dict.value"
@@ -39,7 +55,13 @@
         </el-select>
       </el-form-item>
       <el-form-item label="下班状态" prop="offStatus">
-        <el-select v-model="queryParams.offStatus" placeholder="请选择下班状态" clearable size="small">
+        <el-select
+          v-model="queryParams.offStatus"
+          placeholder="请选择下班状态"
+          clearable
+          size="small"
+          style="width: 240px"
+        >
           <el-option
             v-for="dict in dict.type.attend_record_status"
             :key="dict.value"
@@ -102,30 +124,20 @@
 
     <el-table v-loading="loading" :data="recordList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <!-- el-table-column label="记录ID" align="center" prop="recordId" />
-      <el-table-column label="星期几" align="center" prop="weekdayNum">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.attend_work_day" :value="scope.row.weekdayNum"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="是否工作日" align="center" prop="isWorkday">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.isWorkday"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="考勤月份" align="center" prop="attendMonth">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.attend_year_month" :value="scope.row.attendMonth"/>
-        </template>
-      </el-table-column -->
       <el-table-column label="用户ID" align="center" prop="userId" />
       <el-table-column label="用户名" align="center" prop="userName" />
-      <el-table-column label="考勤日期" align="center" prop="attendDate" width="150">
+      <el-table-column label="规则名称" align="center" prop="ruleName" />
+      <el-table-column label="考勤日期" align="center" prop="attendDate" >
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.attendDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="排班序号" align="center" prop="scheduleSort" width="80"/>
+      <el-table-column label="出勤类型" align="center" prop="attendType">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.attend_record_type" :value="scope.row.attendType"/>
+        </template>
+      </el-table-column>
+      <!-- el-table-column label="排班序号" align="center" prop="scheduleSort" /-->
       <el-table-column label="上班时间" align="center" prop="onTime" />
       <el-table-column label="上班状态" align="center" prop="onStatus">
         <template slot-scope="scope">
@@ -138,7 +150,7 @@
           <dict-tag :options="dict.type.attend_record_status" :value="scope.row.offStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="考勤时长" align="center" prop="attendHour" width="80"/>
+      <el-table-column label="考勤时长" align="center" prop="attendHour" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -191,7 +203,7 @@
               v-for="dict in dict.type.attend_work_day"
               :key="dict.value"
               :label="dict.label"
-              :value="dict.value"
+              :value="parseInt(dict.value)"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -208,12 +220,15 @@
         <el-form-item label="考勤月份" prop="attendMonth">
           <el-select v-model="form.attendMonth" placeholder="请选择考勤月份">
             <el-option
-              v-for="dict in dict.type.attend_year_month"
+              v-for="dict in dict.type.attend_statistics_month"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
             ></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="考勤时长" prop="attendHour">
+          <el-input v-model="form.attendHour" placeholder="请输入考勤时长" />
         </el-form-item>
         <el-form-item label="排班序号" prop="scheduleSort">
           <el-input v-model="form.scheduleSort" placeholder="请输入排班序号" />
@@ -255,6 +270,22 @@
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
+        <el-form-item label="规则ID" prop="ruleId">
+          <el-input v-model="form.ruleId" placeholder="请输入规则ID" />
+        </el-form-item>
+        <el-form-item label="规则名称" prop="ruleName">
+          <el-input v-model="form.ruleName" placeholder="请输入规则名称" />
+        </el-form-item>
+        <el-form-item label="出勤类型" prop="attendType">
+          <el-select v-model="form.attendType" placeholder="请选择出勤类型">
+            <el-option
+              v-for="dict in dict.type.attend_record_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -269,7 +300,7 @@ import { listRecord, getRecord, delRecord, addRecord, updateRecord } from "@/api
 
 export default {
   name: "Record",
-  dicts: ['sys_yes_no', 'attend_year_month', 'attend_record_status', 'attend_record_status', 'attend_work_day'],
+  dicts: ['attend_work_day', 'sys_yes_no', 'attend_statistics_month', 'attend_record_status', 'attend_record_status', 'attend_record_type'],
   data() {
     return {
       // 遮罩层
@@ -290,15 +321,16 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 日期范围
+      dateRange: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         userName: null,
-        attendDate: null,
-        attendMonth: null,
         onStatus: null,
         offStatus: null,
+        attendType: null
       },
       // 表单参数
       form: {},
@@ -310,9 +342,6 @@ export default {
         attendDate: [
           { required: true, message: "考勤日期不能为空", trigger: "blur" }
         ],
-        attendMonth: [
-          { required: true, message: "考勤月份不能为空", trigger: "change" }
-        ],
       }
     };
   },
@@ -323,7 +352,7 @@ export default {
     /** 查询考勤记录列表 */
     getList() {
       this.loading = true;
-      listRecord(this.queryParams).then(response => {
+      listRecord(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.recordList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -347,14 +376,17 @@ export default {
         attendHour: null,
         scheduleSort: null,
         onTime: null,
-        onStatus: null,
+        onStatus: "0",
         offTime: null,
-        offStatus: null,
+        offStatus: "0",
         createBy: null,
         createTime: null,
         updateBy: null,
         updateTime: null,
-        remark: null
+        remark: null,
+        ruleId: null,
+        ruleName: null,
+        attendType: null
       };
       this.resetForm("form");
     },
@@ -365,6 +397,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },

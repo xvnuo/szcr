@@ -56,6 +56,8 @@ public class AttendHolidayServiceImpl implements IAttendHolidayService
     public int insertAttendHoliday(AttendHoliday attendHoliday)
     {
         attendHoliday.setCreateTime(DateUtils.getNowDate());
+        // 将给定区间内的日期都设置为“3”-休假日
+        attendHolidayMapper.updateCalendar(attendHoliday.getBeginTime(), attendHoliday.getEndTime(), "3");
         return attendHolidayMapper.insertAttendHoliday(attendHoliday);
     }
 
@@ -68,6 +70,7 @@ public class AttendHolidayServiceImpl implements IAttendHolidayService
     @Override
     public int updateAttendHoliday(AttendHoliday attendHoliday)
     {
+        // 需要有旧的holiday信息，才能正确更新
         attendHoliday.setUpdateTime(DateUtils.getNowDate());
         return attendHolidayMapper.updateAttendHoliday(attendHoliday);
     }
@@ -81,6 +84,15 @@ public class AttendHolidayServiceImpl implements IAttendHolidayService
     @Override
     public int updateHolidayStatus(AttendHoliday holiday)
     {
+        AttendHoliday oholiday = attendHolidayMapper.selectAttendHolidayByHolidayId(holiday.getHolidayId());
+        // 0-启用假期
+        if(holiday.getStatus().equals("0")){
+            attendHolidayMapper.updateCalendar(oholiday.getBeginTime(), oholiday.getEndTime(), "3");
+        }
+        // 1-停用假期
+        else{
+            attendHolidayMapper.updateCalendar(oholiday.getBeginTime(), oholiday.getEndTime(), "0");
+        }
         return attendHolidayMapper.updateAttendHoliday(holiday);
     }
 
@@ -93,6 +105,11 @@ public class AttendHolidayServiceImpl implements IAttendHolidayService
     @Override
     public int deleteAttendHolidayByHolidayIds(Long[] holidayIds)
     {
+        for(Long holidayId: holidayIds){
+            // 将该假期范围内的状态设置为0(暂时不区分工作日和周末)
+            AttendHoliday holiday = attendHolidayMapper.selectAttendHolidayByHolidayId(holidayId);
+            attendHolidayMapper.updateCalendar(holiday.getBeginTime(), holiday.getEndTime(), "0");
+        }
         return attendHolidayMapper.deleteAttendHolidayByHolidayIds(holidayIds);
     }
 
@@ -105,6 +122,9 @@ public class AttendHolidayServiceImpl implements IAttendHolidayService
     @Override
     public int deleteAttendHolidayByHolidayId(Long holidayId)
     {
+        // 将该假期范围内的状态设置为0(暂时不区分工作日和周末)
+        AttendHoliday holiday = attendHolidayMapper.selectAttendHolidayByHolidayId(holidayId);
+        attendHolidayMapper.updateCalendar(holiday.getBeginTime(), holiday.getEndTime(), "0");
         return attendHolidayMapper.deleteAttendHolidayByHolidayId(holidayId);
     }
 }

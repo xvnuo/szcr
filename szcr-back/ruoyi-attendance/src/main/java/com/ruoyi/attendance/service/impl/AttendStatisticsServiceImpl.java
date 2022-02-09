@@ -57,7 +57,7 @@ public class AttendStatisticsServiceImpl implements IAttendStatisticsService
             attendStatistics.setAttendMonth(ft.format(date));
         }
         List<AttendStatistics> resList = new LinkedList<>();
-        resList.addAll(recordMapper.generateStatisticsList(attendStatistics));
+        //resList.addAll(recordMapper.generateStatisticsList(attendStatistics));
         for(AttendStatistics statistics: resList){
             List<AttendStatistics> tmpList = attendStatisticsMapper.selectAttendStatisticsList(statistics);
             if(tmpList==null || tmpList.size()==0){

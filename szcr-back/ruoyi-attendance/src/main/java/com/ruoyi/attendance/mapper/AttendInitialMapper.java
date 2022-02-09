@@ -66,4 +66,5 @@ public interface AttendInitialMapper
      * @return 结果
      */
     public List<AttendRecord> selectAttendRecordList(AttendRecord attendRecord);
+
 }

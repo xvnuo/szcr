@@ -114,5 +114,4 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         group by i.user_id, substr(i.initial_time, 1, 10)
         order by i.user_id, substr(i.initial_time, 1, 10) ASC
     </select>
-
 </mapper>
