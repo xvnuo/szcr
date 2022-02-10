@@ -2,18 +2,19 @@ package com.ruoyi.attendance.mapper;
 
 import java.util.List;
 import com.ruoyi.attendance.domain.AttendStatistics;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 月度考勤统计Mapper接口
- * 
+ *
  * @author xvnuo
  * @date 2022-01-23
  */
-public interface AttendStatisticsMapper 
+public interface AttendStatisticsMapper
 {
     /**
      * 查询月度考勤统计
-     * 
+     *
      * @param statisticsId 月度考勤统计主键
      * @return 月度考勤统计
      */
@@ -21,7 +22,7 @@ public interface AttendStatisticsMapper
 
     /**
      * 查询月度考勤统计列表
-     * 
+     *
      * @param attendStatistics 月度考勤统计
      * @return 月度考勤统计集合
      */
@@ -29,7 +30,7 @@ public interface AttendStatisticsMapper
 
     /**
      * 新增月度考勤统计
-     * 
+     *
      * @param attendStatistics 月度考勤统计
      * @return 结果
      */
@@ -37,7 +38,7 @@ public interface AttendStatisticsMapper
 
     /**
      * 修改月度考勤统计
-     * 
+     *
      * @param attendStatistics 月度考勤统计
      * @return 结果
      */
@@ -45,7 +46,7 @@ public interface AttendStatisticsMapper
 
     /**
      * 删除月度考勤统计
-     * 
+     *
      * @param statisticsId 月度考勤统计主键
      * @return 结果
      */
@@ -53,9 +54,17 @@ public interface AttendStatisticsMapper
 
     /**
      * 批量删除月度考勤统计
-     * 
+     *
      * @param statisticsIds 需要删除的数据主键集合
      * @return 结果
      */
     public int deleteAttendStatisticsByStatisticsIds(Long[] statisticsIds);
+
+    /**
+     * 检验唯一性
+     * @param userId 用户编号
+     * @param attendMonth 考勤月份
+     * @return 结果
+     */
+    public AttendStatistics checkDuplicate(@Param("userId") Long userId, @Param("attendMonth") String attendMonth);
 }

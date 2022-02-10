@@ -34,6 +34,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
+    <select id="checkDuplicate" resultMap="AttendStatisticsResult">
+        select *
+        from attend_statistics
+        where user_id = #{userId} and attend_month = #{attendMonth}
+        limit 1
+    </select>
+
     <select id="selectAttendStatisticsByStatisticsId" parameterType="Long" resultMap="AttendStatisticsResult">
         <include refid="selectAttendStatisticsVo"/>
         where statistics_id = #{statisticsId}

@@ -7,6 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.ruoyi.attendance.mapper.AttendRecordMapper;
+import com.ruoyi.attendance.mapper.AttendRuleMapper;
+import com.ruoyi.common.core.domain.entity.AttendRule;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.system.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.attendance.mapper.AttendStatisticsMapper;
@@ -27,6 +31,9 @@ public class AttendStatisticsServiceImpl implements IAttendStatisticsService
 
     @Autowired
     private AttendRecordMapper recordMapper;
+
+    @Autowired
+    private SysUserMapper userMapper;
 
     /**
      * 查询月度考勤统计
@@ -49,22 +56,19 @@ public class AttendStatisticsServiceImpl implements IAttendStatisticsService
     @Override
     public List<AttendStatistics> selectAttendStatisticsList(AttendStatistics attendStatistics)
     {
-        // 如果未初始化年-月，则将其设为系统当前的年份-月份
         Date date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM");
-        if(attendStatistics.getAttendMonth()==null){
-            System.out.println(ft.format(date));
-            attendStatistics.setAttendMonth(ft.format(date));
-        }
-        List<AttendStatistics> resList = new LinkedList<>();
-        //resList.addAll(recordMapper.generateStatisticsList(attendStatistics));
-        for(AttendStatistics statistics: resList){
-            List<AttendStatistics> tmpList = attendStatisticsMapper.selectAttendStatisticsList(statistics);
-            if(tmpList==null || tmpList.size()==0){
-                attendStatisticsMapper.insertAttendStatistics(statistics);
-            }
-            else{
-                attendStatisticsMapper.updateAttendStatistics(statistics);
+        List<SysUser> userList = userMapper.selectUserList(new SysUser());
+        for(SysUser user: userList){
+            List<AttendStatistics> statisticsList = recordMapper.selectStatisticsList(user.getUserId(), date);
+            for(AttendStatistics statistics: statisticsList){
+                AttendStatistics tmp = attendStatisticsMapper.checkDuplicate(user.getUserId(), ft.format(date));
+                if(tmp==null){
+                    attendStatisticsMapper.insertAttendStatistics(statistics);
+                }
+                else{
+                    attendStatisticsMapper.updateAttendStatistics(statistics);
+                }
             }
         }
         return attendStatisticsMapper.selectAttendStatisticsList(attendStatistics);

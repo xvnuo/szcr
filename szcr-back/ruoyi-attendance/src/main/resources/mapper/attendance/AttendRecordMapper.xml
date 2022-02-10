@@ -28,6 +28,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="attendType"    column="attend_type"    />
     </resultMap>
 
+    <resultMap type="AttendStatistics"  id="AttendStatisticsResult">
+        <result property="statisticsId" column="statistics_id"    />
+        <result property="attendMonth"  column="attend_month"    />
+        <result property="userId"       column="user_id"    />
+        <result property="userName"     column="user_name"    />
+        <result property="ruleId"       column="rule_id"    />
+        <result property="ruleName"     column="rule_name"    />
+        <result property="attendDays"   column="attend_days"    />
+        <result property="normalDays"   column="normal_days"    />
+        <result property="outsideDays"  column="outside_days"    />
+        <result property="absenceDays"  column="absence_days"    />
+        <result property="leaveDays"    column="leave_days"    />
+        <result property="lateTimes"    column="late_times"    />
+        <result property="earlyTimes"   column="early_times"    />
+        <result property="overHours"    column="over_hours"    />
+    </resultMap>
+
     <sql id="selectAttendRecordVo">
         select record_id, user_id, user_name, attend_date, weekday_num, is_workday, attend_month, attend_hour, schedule_sort, on_time, on_status, off_time, off_status, create_by, create_time, update_by, update_time, remark, rule_id, rule_name, attend_type from attend_record
     </sql>
@@ -149,4 +166,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{recordId}
         </foreach>
     </delete>
+
+    <select id="selectStatisticsList" resultMap="AttendStatisticsResult">
+        select attend_month,
+               user_id,
+               user_name,
+               rule_id,
+               rule_name,
+               count(case when attend_type='1' or attend_type='4' then attend_date end)*1.0 as attend_days,
+               count(case when attend_type='1' and on_status='1' and off_status='1' then attend_date end)*1.0 as normal_days,
+               count(case when attend_type='6' then attend_date end)*1.0 as outside_days,
+        	   count(case when attend_type='5' then attend_date end)*1.0 as absence_days,
+               count(case when attend_type='3' then attend_date end)*1.0 as leave_days,
+        	   count(case when attend_type='4' then attend_date end)*1.0 as over_hours,
+        	   count(case when attend_type='1' and off_status='3' then attend_date end) as early_times,
+        	   count(case when attend_type='1' and (on_status='2' or off_status='2') then attend_date end) as late_times
+        from attend_record
+        where user_id = #{userId} and date_format(attend_date,'%y%m') &lt;= date_format(#{attendMonth},'%y%m')
+        group by user_id, attend_month
+        order by user_id, attend_month ASC
+    </select>
 </mapper>

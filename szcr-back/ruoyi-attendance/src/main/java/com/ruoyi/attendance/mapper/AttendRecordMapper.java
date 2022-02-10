@@ -3,6 +3,7 @@ package com.ruoyi.attendance.mapper;
 import java.util.Date;
 import java.util.List;
 import com.ruoyi.attendance.domain.AttendRecord;
+import com.ruoyi.attendance.domain.AttendStatistics;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -68,4 +69,12 @@ public interface AttendRecordMapper
      * @return 结果
      */
     public AttendRecord checkDuplicate(@Param("userId") Long userId, @Param("attendDate") Date attendDate);
+
+    /**
+     * 整理records，生成每月的数据
+     * @param userId 用户ID
+     * @param attendMonth 年份-月份
+     * @return 结果
+     */
+    public List<AttendStatistics> selectStatisticsList(@Param("userId") Long userId, @Param("attendMonth") Date attendMonth);
 }

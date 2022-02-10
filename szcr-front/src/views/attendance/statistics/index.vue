@@ -82,13 +82,13 @@
     </el-row>
 
     <el-table v-loading="loading" :data="statisticsList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" align="center" />
       <el-table-column label="考勤月份" align="center" prop="attendMonth">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.attend_year_month" :value="scope.row.attendMonth"/>
         </template>
       </el-table-column>
-      <el-table-column label="用户编号" align="center" prop="userId" />
+      <!-- el-table-column label="用户编号" align="center" prop="userId" /-->
       <el-table-column label="用户名" align="center" prop="userName" />
       <el-table-column label="规则名称" align="center" prop="ruleName" />
       <el-table-column label="实到天数" align="center" prop="attendDays" />
