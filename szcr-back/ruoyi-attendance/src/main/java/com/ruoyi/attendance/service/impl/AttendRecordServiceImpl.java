@@ -57,15 +57,67 @@ public class AttendRecordServiceImpl implements IAttendRecordService
     @Override
     public List<AttendRecord> selectAttendRecordList(AttendRecord attendRecord)
     {
+        if(attendRecord==null){
+            // return attendRecordMapper.selectAttendRecordList(null);
+        }
         Date date = new Date();
         List<SysUser> userList = userMapper.selectUserList(new SysUser());
+        // 遍历每个用户
         for(SysUser user: userList){
-            System.out.println(user.getUserName());
+            // 用户的考勤规则
+            AttendRule rule = ruleMapper.selectAttendRuleByRuleId(user.getRuleId());
+            // 用户至今为止的全部考勤记录
             List<AttendRecord> recordList = initialMapper.selectAttendRecordList(user.getUserId(), date);
-            System.out.println(recordList.size());
+            for(AttendRecord record: recordList){
+                // 这天未出勤：缺勤或者正常休假
+                if(record.getUserId()==null){
+                    record.setUserId(user.getUserId());
+                    record.setUserName(user.getUserName());
+                    record.setRuleId(user.getRuleId());
+                    record.setRuleName(rule.getRuleName());
+                    // 考勤规则规定这天无需考勤或者这天是休假,attendType=2,休假
+                    if(!rule.getWorkDays().contains(String.valueOf(record.getWeekdayNum())) || record.getIsWorkday().equals("3")){
+                        record.setAttendType("2");
+                    }
+                    else{// 需要考勤，且不是休假，attendType=5，缺勤
+                        record.setAttendType("5");
+                    }
+                }
+                // 这天出勤：正常、迟到、早退、加班
+                else{
+                    // 这天不需要出勤或者是节假日，但是出勤了，attendType=4,加班
+                    if(!rule.getWorkDays().contains(String.valueOf(record.getWeekdayNum())) || record.getIsWorkday().equals("3")){
+                        record.setAttendType("4");
+                    }
+                    else{
+                        record.setAttendType("1");// attendType=1，出勤
+                    }
+                    Double diff = (record.getOffTime().getTime()-record.getOnTime().getTime())/(1.0*1000*60*60);
+                    record.setAttendHour(diff);
+                    if(rule.getRuleType().equals("1")){// 固定考勤
+                        record.setOnStatus(rule.getOnTime().getTime()>=record.getOnTime().getTime()?"1":"2");// 正常or迟到
+                        record.setOffStatus(rule.getOffTime().getTime()<=record.getOffTime().getTime()?"1":"3");// 正常or早退
+                    }
+                    else if(rule.getRuleType().equals("2")){// 弹性考勤
+                        record.setOnStatus("1");// 上班状态-正常
+                        record.setOffStatus(diff>=rule.getWorkHour()?"1":"3");//下班状态-正常、早退
+                    }
+                }
+                AttendRecord tmp = attendRecordMapper.checkDuplicate(record.getUserId(), record.getAttendDate());
+                if(tmp==null){
+                    System.out.println(record.getUserId());
+                    attendRecordMapper.insertAttendRecord(record);
+                }
+                else{
+                    if(!record.getAttendType().equals("3")){// 请假状态
+                        attendRecordMapper.updateAttendRecord(record);
+                    }
+                }
+            }
         }
         return attendRecordMapper.selectAttendRecordList(attendRecord);
     }
+
 
     /**
      * 新增考勤记录

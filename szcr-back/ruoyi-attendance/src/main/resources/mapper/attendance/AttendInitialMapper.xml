@@ -94,7 +94,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!--将原始的考勤记录按日期整理成标准形式 -->
     <select id="selectAttendRecordList" resultMap="AttendRecordResult">
-        select ifnull(m.user_id, #{userId}),
+        select m.user_id,
                m.user_name,
                m.rule_id,
                m.rule_name,

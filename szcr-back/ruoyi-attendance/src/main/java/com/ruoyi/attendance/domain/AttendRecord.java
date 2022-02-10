@@ -45,7 +45,7 @@ public class AttendRecord extends BaseEntity
 
     /** 考勤时长 */
     @Excel(name = "考勤时长")
-    private Long attendHour;
+    private Double attendHour;
 
     /** 排班序号 */
     @Excel(name = "排班序号")
@@ -143,12 +143,12 @@ public class AttendRecord extends BaseEntity
     {
         return attendMonth;
     }
-    public void setAttendHour(Long attendHour)
+    public void setAttendHour(Double attendHour)
     {
         this.attendHour = attendHour;
     }
 
-    public Long getAttendHour()
+    public Double getAttendHour()
     {
         return attendHour;
     }

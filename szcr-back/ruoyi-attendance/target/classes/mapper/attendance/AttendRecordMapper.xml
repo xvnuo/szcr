@@ -36,16 +36,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectAttendRecordVo"/>
         <where>
             <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
-            <if test="onStatus != null  and onStatus != ''"> and on_status = #{onStatus}</if>
-            <if test="offStatus != null  and offStatus != ''"> and off_status = #{offStatus}</if>
-            <if test="attendType != null  and attendType != ''"> and attend_type = #{attendType}</if>
             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
                 AND date_format(attend_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
             </if>
             <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
                 AND date_format(attend_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
             </if>
+            <if test="onStatus != null  and onStatus != ''"> and on_status = #{onStatus}</if>
+            <if test="offStatus != null  and offStatus != ''"> and off_status = #{offStatus}</if>
+            <if test="attendType != null  and attendType != ''"> and attend_type = #{attendType}</if>
         </where>
+        order by user_id, attend_date asc
+    </select>
+
+    <select id="checkDuplicate" parameterType="AttendRecord" resultMap="AttendRecordResult">
+        select *
+        from   attend_record
+        where  user_id = #{userId} and to_days(attend_date) = to_days(#{attendDate})
     </select>
 
     <select id="selectAttendRecordByRecordId" parameterType="Long" resultMap="AttendRecordResult">
@@ -125,7 +132,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ruleName != null">rule_name = #{ruleName},</if>
             <if test="attendType != null">attend_type = #{attendType},</if>
         </trim>
-        where record_id = #{recordId}
+        <where>
+            <if test="recordId != null  and recordId != ''"> record_id = #{recordId}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="attendDate != null"> and to_days(attend_date) = to_days(#{attendDate})</if>
+        </where>
     </update>
 
     <delete id="deleteAttendRecordByRecordId" parameterType="Long">
