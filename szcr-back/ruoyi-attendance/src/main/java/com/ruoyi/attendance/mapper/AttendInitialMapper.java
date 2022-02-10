@@ -1,8 +1,10 @@
 package com.ruoyi.attendance.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.attendance.domain.AttendInitial;
 import com.ruoyi.attendance.domain.AttendRecord;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 原始考勤记录Mapper接口
@@ -62,9 +64,9 @@ public interface AttendInitialMapper
 
     /**
      * 将原始的考勤记录整理成格式化的考勤记录
-     * @param attendRecord 考勤记录
+     * @param
      * @return 结果
      */
-    public List<AttendRecord> selectAttendRecordList(AttendRecord attendRecord);
+    public List<AttendRecord> selectAttendRecordList(@Param("userId") Long userId, @Param("date")Date date);
 
 }

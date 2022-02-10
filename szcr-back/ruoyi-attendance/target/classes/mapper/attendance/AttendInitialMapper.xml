@@ -93,25 +93,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <!--将原始的考勤记录按日期整理成标准形式 -->
-    <select id="selectAttendRecordList" parameterType="AttendRecord" resultMap="AttendRecordResult">
-        select i.user_id,
-               i.user_name,
-               r.rule_id,
-               r.rule_name,
-               substr(i.initial_time, 1, 10) as attend_date,
-               dayofweek(i.initial_time)-1 as weekday_num,
-               substr(i.initial_time, 1, 7) as attend_month,
-               min(i.initial_time) as on_time,
-               max(i.initial_time) as off_time
-        from attend_initial i
-             left join sys_user u on i.user_id = u.user_id
-             left join attend_rule r on u.rule_id = r.rule_id
-        <where>
-            <if test="userName != null  and userName != ''">i.user_name like concat('%', #{userName}, '%')</if>
-            <if test="attendMonth != null  and attendMonth != ''"> and i.attend_month = #{attendMonth}</if>
-            <if test="attendDate != null  and attendDate != ''"> and i.attend_date = #{attendDate}</if>
-        </where>
-        group by i.user_id, substr(i.initial_time, 1, 10)
-        order by i.user_id, substr(i.initial_time, 1, 10) ASC
+    <select id="selectAttendRecordList" resultMap="AttendRecordResult">
+        select ifnull(m.user_id, #{userId}),
+               m.user_name,
+               m.rule_id,
+               m.rule_name,
+               substr(c1.rep_date, 1, 7) as attend_month,
+               c1.rep_date as attend_date,
+               c1.rep_week as weekday_num,
+               c1.rep_status as is_workday,
+               m.on_time as on_time,
+               m.off_time as off_time
+        from config_calendar c1
+             left join (
+                  select u.user_id,
+                       u.user_name,
+                       r.rule_id,
+                       r.rule_name,
+                  	   substr(c.rep_date, 1, 7) as attend_month,
+                  	   c.rep_date as attend_date,
+                  	   c.rep_week as weekday_num,
+                  	   c.rep_status as is_workday,
+                  	   min(i.initial_time) as on_time,
+                  	   max(i.initial_time) as off_time
+                  from attend_initial i
+                       left join config_calendar c on substr(i.initial_time,1,10) = c.rep_date
+                       left join sys_user u on i.user_id = u.user_id
+                       left join attend_rule r on u.rule_id = r.rule_id
+                  where i.user_id = #{userId} and date_format(c.rep_date,'%y%m%d') &lt;= date_format(#{date},'%y%m%d')
+                  group by i.user_id, substr(i.initial_time, 1, 10)
+             ) as m on c1.rep_date = m.attend_date
+        where date_format(c1.rep_date,'%y%m%d') &lt;= date_format(#{date},'%y%m%d')
+        order by c1.rep_date asc;
     </select>
 </mapper>
