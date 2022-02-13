@@ -5,15 +5,15 @@ import com.ruoyi.attendance.domain.AttendRecord;
 
 /**
  * 考勤记录Service接口
- * 
+ *
  * @author xvnuo
  * @date 2022-02-09
  */
-public interface IAttendRecordService 
+public interface IAttendRecordService
 {
     /**
      * 查询考勤记录
-     * 
+     *
      * @param recordId 考勤记录主键
      * @return 考勤记录
      */
@@ -21,7 +21,7 @@ public interface IAttendRecordService
 
     /**
      * 查询考勤记录列表
-     * 
+     *
      * @param attendRecord 考勤记录
      * @return 考勤记录集合
      */
@@ -29,7 +29,7 @@ public interface IAttendRecordService
 
     /**
      * 新增考勤记录
-     * 
+     *
      * @param attendRecord 考勤记录
      * @return 结果
      */
@@ -37,7 +37,7 @@ public interface IAttendRecordService
 
     /**
      * 修改考勤记录
-     * 
+     *
      * @param attendRecord 考勤记录
      * @return 结果
      */
@@ -45,7 +45,7 @@ public interface IAttendRecordService
 
     /**
      * 批量删除考勤记录
-     * 
+     *
      * @param recordIds 需要删除的考勤记录主键集合
      * @return 结果
      */
@@ -53,9 +53,14 @@ public interface IAttendRecordService
 
     /**
      * 删除考勤记录信息
-     * 
+     *
      * @param recordId 考勤记录主键
      * @return 结果
      */
     public int deleteAttendRecordByRecordId(Long recordId);
+
+    /**
+     * 更新到今天为止的考勤记录
+     */
+    public void updateAllAttendRecord();
 }

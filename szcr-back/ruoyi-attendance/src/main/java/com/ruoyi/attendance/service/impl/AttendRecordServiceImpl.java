@@ -57,9 +57,11 @@ public class AttendRecordServiceImpl implements IAttendRecordService
     @Override
     public List<AttendRecord> selectAttendRecordList(AttendRecord attendRecord)
     {
-        if(attendRecord==null){
-            // return attendRecordMapper.selectAttendRecordList(null);
-        }
+        return attendRecordMapper.selectAttendRecordList(attendRecord);
+    }
+
+    @Override
+    public void updateAllAttendRecord(){
         Date date = new Date();
         List<SysUser> userList = userMapper.selectUserList(new SysUser());
         // 遍历每个用户
@@ -115,7 +117,6 @@ public class AttendRecordServiceImpl implements IAttendRecordService
                 }
             }
         }
-        return attendRecordMapper.selectAttendRecordList(attendRecord);
     }
 
 

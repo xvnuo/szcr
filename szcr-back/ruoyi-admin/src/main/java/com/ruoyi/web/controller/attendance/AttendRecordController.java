@@ -41,6 +41,7 @@ public class AttendRecordController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(AttendRecord attendRecord)
     {
+        attendRecordService.updateAllAttendRecord();
         startPage();
         List<AttendRecord> list = attendRecordService.selectAttendRecordList(attendRecord);
         return getDataTable(list);

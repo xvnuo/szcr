@@ -41,6 +41,7 @@ public class AttendStatisticsController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(AttendStatistics attendStatistics)
     {
+        attendStatisticsService.updateAllStatistics();
         startPage();
         List<AttendStatistics> list = attendStatisticsService.selectAttendStatisticsList(attendStatistics);
         return getDataTable(list);

@@ -56,6 +56,11 @@ public class AttendStatisticsServiceImpl implements IAttendStatisticsService
     @Override
     public List<AttendStatistics> selectAttendStatisticsList(AttendStatistics attendStatistics)
     {
+        return attendStatisticsMapper.selectAttendStatisticsList(attendStatistics);
+    }
+
+    @Override
+    public void updateAllStatistics(){
         Date date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM");
         List<SysUser> userList = userMapper.selectUserList(new SysUser());
@@ -71,7 +76,6 @@ public class AttendStatisticsServiceImpl implements IAttendStatisticsService
                 }
             }
         }
-        return attendStatisticsMapper.selectAttendStatisticsList(attendStatistics);
     }
 
     /**
