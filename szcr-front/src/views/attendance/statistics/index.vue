@@ -173,8 +173,8 @@
         <el-form-item label="早退次数" prop="earlyTimes">
           <el-input v-model="form.earlyTimes" placeholder="请输入早退次数" />
         </el-form-item>
-        <el-form-item label="加班时长" prop="overHours">
-          <el-input v-model="form.overHours" placeholder="请输入加班时长" />
+        <el-form-item label="加班天数" prop="overHours">
+          <el-input v-model="form.overHours" placeholder="请输入加班天数" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

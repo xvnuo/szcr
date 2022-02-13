@@ -20,16 +20,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="每日工时" prop="workHour">
-        <el-input
-          v-model="queryParams.workHour"
-          placeholder="请输入每日工时"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item label="规则状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable size="small">
           <el-option
             v-for="dict in dict.type.sys_normal_disable"
@@ -333,10 +324,6 @@ export default {
         pageSize: 10,
         ruleName: null,
         ruleType: null,
-        onTime: null,
-        offTime: null,
-        workHour: null,
-        workDays: null,
         status: null,
       },
       // 表单参数

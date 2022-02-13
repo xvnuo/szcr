@@ -11,21 +11,17 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="开始时间" prop="beginTime">
-        <el-date-picker clearable size="small"
-                        v-model="queryParams.beginTime"
-                        type="date"
-                        value-format="yyyy-MM-dd"
-                        placeholder="选择开始时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="结束时间" prop="endTime">
-        <el-date-picker clearable size="small"
-                        v-model="queryParams.endTime"
-                        type="date"
-                        value-format="yyyy-MM-dd"
-                        placeholder="选择结束时间">
-        </el-date-picker>
+      <el-form-item label="日期范围">
+        <el-date-picker
+          v-model="dateRange"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label="假日状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择假日状态" clearable size="small">
@@ -210,13 +206,13 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 日期范围
+      dateRange: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         name: null,
-        beginTime: null,
-        endTime: null,
         status: null,
       },
       // 表单参数
@@ -245,7 +241,7 @@ export default {
     /** 查询假日信息列表 */
     getList() {
       this.loading = true;
-      listHoliday(this.queryParams).then(response => {
+      listHoliday(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         this.holidayList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -279,6 +275,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },

@@ -22,48 +22,16 @@
           end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="出勤类型" prop="attendType">
+      <el-form-item label="考勤类型" prop="attendType">
         <el-select
           v-model="queryParams.attendType"
-          placeholder="请选择出勤类型"
+          placeholder="请选择考勤类型"
           clearable
           size="small"
           style="width: 240px"
         >
           <el-option
             v-for="dict in dict.type.attend_record_type"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="上班状态" prop="onStatus">
-        <el-select
-          v-model="queryParams.onStatus"
-          placeholder="请选择上班状态"
-          clearable
-          size="small"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in dict.type.attend_record_status"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="下班状态" prop="offStatus">
-        <el-select
-          v-model="queryParams.offStatus"
-          placeholder="请选择下班状态"
-          clearable
-          size="small"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in dict.type.attend_record_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -132,12 +100,12 @@
           <span>{{ parseTime(scope.row.attendDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="出勤类型" align="center" prop="attendType">
+      <el-table-column label="考勤类型" align="center" prop="attendType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.attend_record_type" :value="scope.row.attendType"/>
         </template>
       </el-table-column>
-      <!-- el-table-column label="排班序号" align="center" prop="scheduleSort" /-->
+      <!-- el-table-column label="排班序号" align="center" prop="scheduleSort" />
       <el-table-column label="上班时间" align="center" prop="onTime" />
       <el-table-column label="上班状态" align="center" prop="onStatus">
         <template slot-scope="scope">
@@ -150,7 +118,7 @@
           <dict-tag :options="dict.type.attend_record_status" :value="scope.row.offStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="考勤时长" align="center" prop="attendHour" />
+      <el-table-column label="考勤时长" align="center" prop="attendHour" / -->
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -181,23 +149,120 @@
     />
 
     <!-- 添加或修改考勤记录对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="用户ID" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入用户ID" />
-        </el-form-item>
-        <el-form-item label="用户名" prop="userName">
-          <el-input v-model="form.userName" placeholder="请输入用户名" />
-        </el-form-item>
-        <el-form-item label="考勤日期" prop="attendDate">
-          <el-date-picker clearable size="small"
-            v-model="form.attendDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择考勤日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="星期几" prop="weekdayNum">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="用户编号" prop="userId">
+              <el-input v-model="form.userId" placeholder="请输入用户ID" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="用户名称" prop="userName">
+              <el-input v-model="form.userName" placeholder="请输入用户名" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="规则编号" prop="ruleId">
+              <el-input v-model="form.ruleId" placeholder="请输入规则ID" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="规则名称" prop="ruleName">
+              <el-input v-model="form.ruleName" placeholder="请输入规则名称" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="考勤日期" prop="attendDate">
+              <el-date-picker clearable size="small"
+                              v-model="form.attendDate"
+                              type="date"
+                              value-format="yyyy-MM-dd"
+                              placeholder="选择考勤日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="考勤类型" prop="attendType">
+              <el-select v-model="form.attendType" placeholder="请选择考勤类型">
+                <el-option
+                  v-for="dict in dict.type.attend_record_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="上班时间" prop="onTime">
+              <el-time-picker clearable
+                              v-model="form.onTime" format="HH:mm:ss" value-format="HH:mm:ss"
+                              :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
+                              placeholder="请选择上班时间">
+              </el-time-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="上班状态" prop="onStatus">
+              <el-select v-model="form.onStatus" placeholder="请选择上班状态">
+                <el-option
+                  v-for="dict in dict.type.attend_record_status"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="下班时间" prop="offTime">
+              <el-time-picker clearable
+                              v-model="form.offTime" format="HH:mm:ss" value-format="HH:mm:ss"
+                              :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
+                              placeholder="请选择下班时间">
+              </el-time-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="下班状态" prop="offStatus">
+              <el-select v-model="form.offStatus" placeholder="请选择下班状态">
+                <el-option
+                  v-for="dict in dict.type.attend_record_status"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="考勤时长" prop="attendHour">
+              <el-input v-model="form.attendHour" placeholder="请输入考勤时长" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="排班序号" prop="scheduleSort">
+              <el-input v-model="form.scheduleSort" placeholder="请输入排班序号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!-- el-form-item label="星期几" prop="weekdayNum">
           <el-select v-model="form.weekdayNum" placeholder="请选择星期几">
             <el-option
               v-for="dict in dict.type.attend_work_day"
@@ -220,72 +285,13 @@
         <el-form-item label="考勤月份" prop="attendMonth">
           <el-select v-model="form.attendMonth" placeholder="请选择考勤月份">
             <el-option
-              v-for="dict in dict.type.attend_statistics_month"
+              v-for="dict in dict.type.attend_year_month"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
             ></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="考勤时长" prop="attendHour">
-          <el-input v-model="form.attendHour" placeholder="请输入考勤时长" />
-        </el-form-item>
-        <el-form-item label="排班序号" prop="scheduleSort">
-          <el-input v-model="form.scheduleSort" placeholder="请输入排班序号" />
-        </el-form-item>
-        <el-form-item label="上班时间" prop="onTime">
-          <el-time-picker clearable
-                          v-model="form.onTime" format="HH:mm:ss" value-format="HH:mm:ss"
-                          :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
-                          placeholder="请选择上班时间">
-          </el-time-picker>
-        </el-form-item>
-        <el-form-item label="上班状态" prop="onStatus">
-          <el-select v-model="form.onStatus" placeholder="请选择上班状态">
-            <el-option
-              v-for="dict in dict.type.attend_record_status"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="下班时间" prop="offTime">
-          <el-time-picker clearable
-                          v-model="form.offTime" format="HH:mm:ss" value-format="HH:mm:ss"
-                          :picker-options='{"selectableRange":"00:00:00-23:59:59"}' :style="{width: '100%'}"
-                          placeholder="请选择下班时间">
-          </el-time-picker>
-        </el-form-item>
-        <el-form-item label="下班状态" prop="offStatus">
-          <el-select v-model="form.offStatus" placeholder="请选择下班状态">
-            <el-option
-              v-for="dict in dict.type.attend_record_status"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="规则ID" prop="ruleId">
-          <el-input v-model="form.ruleId" placeholder="请输入规则ID" />
-        </el-form-item>
-        <el-form-item label="规则名称" prop="ruleName">
-          <el-input v-model="form.ruleName" placeholder="请输入规则名称" />
-        </el-form-item>
-        <el-form-item label="出勤类型" prop="attendType">
-          <el-select v-model="form.attendType" placeholder="请选择出勤类型">
-            <el-option
-              v-for="dict in dict.type.attend_record_type"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+        </el-form-item -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -300,7 +306,7 @@ import { listRecord, getRecord, delRecord, addRecord, updateRecord } from "@/api
 
 export default {
   name: "Record",
-  dicts: ['attend_work_day', 'sys_yes_no', 'attend_statistics_month', 'attend_record_status', 'attend_record_status', 'attend_record_type'],
+  dicts: ['attend_work_day', 'sys_yes_no', 'attend_year_month', 'attend_record_status', 'attend_record_status', 'attend_record_type'],
   data() {
     return {
       // 遮罩层
