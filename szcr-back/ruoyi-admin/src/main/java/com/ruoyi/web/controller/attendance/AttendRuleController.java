@@ -23,6 +23,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.attendance.service.IAttendRuleService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 考勤规则Controller
@@ -163,5 +164,34 @@ public class AttendRuleController extends BaseController
     public AjaxResult selectAuthUserAll(Long ruleId, Long[] userIds)
     {
         return toAjax(attendRuleService.insertUsersRule(ruleId, userIds));
+    }
+
+    /**
+     * 通过Excel文件批量导入用户与考勤规则的关联关系
+     * @param file 文件
+     * @return 结果
+     * @throws Exception 异常
+     */
+    @Log(title = "用户管理", businessType = BusinessType.IMPORT)
+    @PreAuthorize("@ss.hasPermi('attendance:rule:import')")
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, Long ruleId, Boolean isUpdateSupport) throws Exception
+    {
+        ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
+        List<SysUser> userList = util.importExcel(file.getInputStream());
+        String operName = getUsername();
+        String message = attendRuleService.importUser(userList, operName, ruleId, isUpdateSupport);
+        return AjaxResult.success(message);
+    }
+
+    /**
+     * 提供用户导入Excel模板文件
+     * @param response
+     */
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
+        util.importTemplateExcel(response, "用户数据");
     }
 }

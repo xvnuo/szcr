@@ -106,6 +106,7 @@
         </template>
       </el-table-column>
       <!-- el-table-column label="排班序号" align="center" prop="scheduleSort" />
+      <el-table-column label="考勤时长" align="center" prop="attendHour" /-->
       <el-table-column label="上班时间" align="center" prop="onTime" />
       <el-table-column label="上班状态" align="center" prop="onStatus">
         <template slot-scope="scope">
@@ -118,7 +119,6 @@
           <dict-tag :options="dict.type.attend_record_status" :value="scope.row.offStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="考勤时长" align="center" prop="attendHour" / -->
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">

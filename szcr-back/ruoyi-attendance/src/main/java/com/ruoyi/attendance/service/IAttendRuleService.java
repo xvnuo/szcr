@@ -2,6 +2,7 @@ package com.ruoyi.attendance.service;
 
 import java.util.List;
 import com.ruoyi.common.core.domain.entity.AttendRule;
+import com.ruoyi.common.core.domain.entity.SysUser;
 
 /**
  * 考勤规则Service接口
@@ -83,4 +84,13 @@ public interface IAttendRuleService
      * @return 结果
      */
     public int insertUsersRule(Long ruleId, Long[] userIds);
+
+    /**
+     * 导入用户与考勤规则的关联关系
+     *
+     * @param userList 用户数据列表
+     * @param operName 操作用户
+     * @return 结果
+     */
+    public String importUser(List<SysUser> userList, String operName, Long ruleId, Boolean isUpdateSupport);
 }
