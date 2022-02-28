@@ -149,13 +149,13 @@
     <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
-          <el-col :span="12">
-            <el-form-item label="名称" prop="ruleName">
+          <el-col :span="8">
+            <el-form-item label="规则名称" prop="ruleName">
               <el-input v-model="form.ruleName" placeholder="请输入名称" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="类型">
+          <el-col :span="16">
+            <el-form-item label="考勤类型">
               <el-radio-group v-model="form.ruleType">
                 <el-radio
                   v-for="dict in dict.type.attend_rule_type"
@@ -166,6 +166,46 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="规则状态">
+              <el-radio-group v-model="form.status">
+                <el-radio
+                  v-for="dict in dict.type.sys_normal_disable"
+                  :key="dict.value"
+                  :label="dict.value"
+                >{{dict.label}}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="16">
+            <el-form-item label="工作周期">
+              <el-checkbox-group v-model="form.workDays">
+                <el-checkbox
+                  v-for="dict in dict.type.attend_work_day"
+                  :key="dict.value"
+                  :label="dict.value">
+                  {{dict.label}}
+                </el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-form-item label="规则备注" prop="remark">
+            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+          </el-form-item>
+        </el-row>
+        <el-divider content-position="center">弹性考勤-工时限定</el-divider>
+        <el-row type="flex" justify="left">
+          <el-col :span="24">
+            <el-form-item label="每日工时" prop="workHour">
+              <el-input v-model="form.workHour" placeholder="请输入弹性考勤每日最少工时" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-divider content-position="center">固定考勤-上下班时间</el-divider>
         <el-row>
           <el-col :span="12">
             <el-form-item label="上班时间" prop="onTime">
@@ -186,42 +226,8 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="每日工时" prop="workHour">
-              <el-input v-model="form.workHour" placeholder="请输入每日工时" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="状态">
-              <el-radio-group v-model="form.status">
-                <el-radio
-                  v-for="dict in dict.type.sys_normal_disable"
-                  :key="dict.value"
-                  :label="dict.value"
-                >{{dict.label}}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-form-item label="工作日">
-            <el-checkbox-group v-model="form.workDays">
-              <el-checkbox
-                v-for="dict in dict.type.attend_work_day"
-                :key="dict.value"
-                :label="dict.value">
-                {{dict.label}}
-              </el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-        </el-row>
-        <el-row>
-          <el-form-item label="备注" prop="remark">
-            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-          </el-form-item>
-        </el-row>
-        <el-divider content-position="center">排班信息</el-divider>
+
+        <el-divider content-position="center">排班考勤-排班信息</el-divider>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
             <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddAttendSchedule">添加</el-button>

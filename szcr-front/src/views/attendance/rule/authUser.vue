@@ -118,7 +118,7 @@
           <!-- div class="el-upload__tip" slot="tip">
             <el-checkbox v-model="upload.updateSupport" /> 是否更新已经存在的用户数据
           </div -->
-          <span>默认更新已经分配考勤规则的用户数据</span>
+          <!-- span>默认更新已经分配考勤规则的用户数据\n</span -->
           <span>仅允许导入xls、xlsx格式文件。</span>
           <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
         </div>
