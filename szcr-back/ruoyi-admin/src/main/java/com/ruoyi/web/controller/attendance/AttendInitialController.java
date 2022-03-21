@@ -101,4 +101,17 @@ public class AttendInitialController extends BaseController
     {
         return toAjax(attendInitialService.deleteAttendInitialByInitialIds(initialIds));
     }
+
+
+    /**
+     * 查询钉钉考勤记录
+     */
+    @GetMapping("/ding")
+    public TableDataInfo getDingRecordList(AttendInitial attendInitial)
+    {
+        startPage();
+        List<AttendInitial> list = attendInitialService.getDingRecordList();
+        return getDataTable(list);
+    }
+
 }

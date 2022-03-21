@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="taobao-sdk-java-auto_1479188381469-20220310-source">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../dingtalk-sdk-java/taobao-sdk-java-auto_1479188381469-20220310.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../dingtalk-sdk-java/taobao-sdk-java-auto_1479188381469-20220310-source.jar!/" />
+    </SOURCES>
+  </library>
+</component>
